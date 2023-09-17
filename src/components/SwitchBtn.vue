@@ -1,77 +1,18 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col md="3">
-          <v-card>
-            <v-card-title>
-              <h2>Compressor 1</h2>
-            </v-card-title>
-            <v-card-text>
-              <FanMotion :is_run="is_run"/>
-              <!-- <SwitchBtn @click="switchOn()"/> -->
-              <label class="switch">
-                  <input type="checkbox" checked="checked" @click="switchCommand()"/>
-                  <div class="button">
-                      <div class="light"></div>
-                      <div class="dots"></div>
-                      <div class="characters"></div>
-                      <div class="shine"></div>
-                      <div class="shadow"></div>
-                  </div>
-              </label>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+    <label class="switch">
+        <input type="checkbox" checked="checked"/>
+        <div class="button">
+            <div class="light"></div>
+            <div class="dots"></div>
+            <div class="characters"></div>
+            <div class="shine"></div>
+            <div class="shadow"></div>
+        </div>
+    </label>
 </template>
-
-<script>
-// import SwitchBtn from "@/components/SwitchBtn.vue"
-import FanMotion from "@/components/FanMotion.vue"
-import axios from 'axios'
-
-export default {
-  name: 'HomeView',
-  data() {
-    return {
-      is_run: false
-    }
-  },
-  methods: {
-    async switchCommand() {
-      try {
-        if(this.is_run) {
-          this.is_run = false
-          await axios.post('http://10.70.132.104:3000/iot/compressor/on')
-        } else {
-          this.is_run = true
-          await axios.post('http://10.70.132.104:3000/iot/compressor/off')
-        }
-      } catch (error) {
-        alert(error)
-      }
-      
-    }
-  },
-  components: {
-    // SwitchBtn,
-    FanMotion
-  },
-}
-</script>
 
 
 <style scoped>
-.card {
-  width: 300px;
-  height: 350px;
-  border-radius: 30px;
-  background: #e0e0e0;
-  box-shadow: 15px 15px 30px #bebebe,
-             -15px -15px 30px #ffffff;
-}
-
 .switch {
   display: block;
   background-color: black;
