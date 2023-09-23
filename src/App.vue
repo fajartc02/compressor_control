@@ -1,19 +1,18 @@
 <template>
   <v-app>
-    <v-app-bar app color="indigo" dark>
+    <v-app-bar class="navbar" style="box-shadow: none">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <h2>Compressor Control System</h2>
+      <h3>Compressor Control System</h3>
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-account-badge</v-icon>
+      </v-btn>
     </v-app-bar>
-    <v-navigation-drawer
-      v-model="drawer"
-      color="indigo text-light"
-      absolute
-      temporary
-      dark
-    >
-      <v-banner>QCC V1.0.1</v-banner>
+    <v-navigation-drawer v-model="drawer" absolute temporary dark>
+      <v-banner>Main menu</v-banner>
       <v-list nav dense>
-        <v-list-item-group v-model="group" color="primary">
+        <v-list-item-group v-model="group" color="light">
           <router-link to="/" style="text-decoration: none">
             <v-list-item>
               <v-list-item-icon>
@@ -52,9 +51,15 @@
 <script>
 export default {
   name: "App",
-
   data: () => ({
     drawer: false,
   }),
 };
 </script>
+
+<style scoped>
+.navbar {
+  background-color: #fff !important;
+  border-bottom: 1px solid #eaeaea;
+}
+</style>
