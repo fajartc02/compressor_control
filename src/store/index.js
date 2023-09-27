@@ -1,17 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from "vuex";
 
-Vue.use(Vuex)
+import plantModule from "./plant.module";
+import authModule from "./auth.module";
 
-export default new Vuex.Store({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+export default createStore({
   modules: {
-  }
-})
+    plant: plantModule,
+    auth: authModule,
+  },
+});

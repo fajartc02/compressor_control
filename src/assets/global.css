@@ -1,5 +1,8 @@
 body {
-  background-color: coral;
+  margin: 0;
+  padding: 0;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
 /* ===== Scrollbar CSS ===== */
@@ -11,7 +14,7 @@ body {
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 8px;
+  width: 0px;
 }
 
 *::-webkit-scrollbar-track {
