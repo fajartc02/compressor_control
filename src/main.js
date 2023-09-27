@@ -1,16 +1,14 @@
-import Vue from "vue";
 import App from "./App.vue";
-import "./registerServiceWorker";
-import router from "./router";
+import { createApp } from "vue";
+import { registerPlugins } from "@/plugins";
 import store from "./store";
-import vuetify from "./plugins/vuetify";
+
+// css
 import "@/assets/global.css";
+import "mosha-vue-toastify/dist/style.css";
 
-Vue.config.productionTip = false;
+const app = createApp(App);
+registerPlugins(app);
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+app.use(store);
+app.mount("#app");
