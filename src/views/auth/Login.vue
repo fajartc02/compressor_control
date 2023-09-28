@@ -68,8 +68,8 @@ export default {
   name: "Login",
   data: () => ({
     visible: false,
-    noreg: "superadmin",
-    password: "admin123",
+    noreg: null,
+    password: null,
   }),
   methods: {
     login() {

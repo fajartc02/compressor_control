@@ -20,6 +20,7 @@
     "draggable-panel": "^1.0.10",
     "mosha-vue-toastify": "^1.0.23",
     "roboto-fontface": "*",
+    "sweetalert2": "^11.7.31",
     "vue": "^3.2.0",
     "vue-drag-resize": "^1.5.4",
     "vue-router": "^4.0.0",
@@ -29,8 +30,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
-    "eslint": "^8.37.0",
-    "eslint-plugin-vue": "^9.3.0",
+    "eslint-plugin-vue": "^9.17.0",
     "sass": "^1.60.0",
     "unplugin-fonts": "^1.0.3",
     "vite": "^4.2.0",

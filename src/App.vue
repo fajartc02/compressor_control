@@ -16,20 +16,19 @@
         v-model="drawer"
         absolute
         temporary
-        class="bg-deep-purple"
+        class="bg-blue-darken-4"
         theme="dark"
       >
         <template v-slot:prepend>
           <v-list-item
-            class="my-2"
             lines="two"
             prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-            title="Jane Smith"
+            :title="isLoggedIn"
             subtitle="Logged in"
           ></v-list-item>
         </template>
         <v-divider></v-divider>
-        <v-list class="mt-2">
+        <v-list class="mt-2" v-model:opened="open">
           <router-link to="/" style="text-decoration: none">
             <v-list-item
               prepend-icon="mdi-home-variant"
@@ -44,6 +43,23 @@
               class="menu-item"
             ></v-list-item>
           </router-link>
+          <v-list-group value="Master">
+              <template v-slot:activator="{ props }">
+                <v-list-item
+                  v-bind="props"
+                  prepend-icon="mdi-file-document"
+                  title="Master"
+                  class="menu-item"
+                ></v-list-item>
+              </template>
+              <router-link v-for="(menu, i) in masterMenu" :key="i" :to="menu.path" style="text-decoration: none">
+                <v-list-item
+                  class="text-white menu-item"
+                  :title="menu.title"
+                  :value="menu.title"
+                ></v-list-item>
+              </router-link>
+          </v-list-group>
         </v-list>
 
         <template v-slot:append>
@@ -68,6 +84,17 @@ export default {
   data: () => ({
     drawer: false,
     showNavigation: true,
+    open: ['Master'],
+    masterMenu: [
+      {
+        path: "/master/users",
+        title: "Users"
+      },
+      {
+        path: "/master/parameters",
+        title: "Parameters"
+      }
+    ]
   }),
   methods: {
     logout() {
@@ -75,13 +102,13 @@ export default {
     },
   },
   mounted() {
-    // if (!this.isLoggedIn) {
-    //   this.$router.push("/auth/login");
-    // }
+    if (!this.isLoggedIn) {
+      this.$router.push("/auth/login");
+    }
   },
   computed: {
     isLoggedIn: function () {
-      return this.$store.getters.userData;
+      return localStorage.getItem("user");
     },
   },
   components: { Toaster },
@@ -112,4 +139,3 @@ export default {
   background-color: #000;
 }
 </style>
- 
