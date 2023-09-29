@@ -1,5 +1,5 @@
 <template>
-  <Toaster position="top-center" />
+  <Toaster position="top-center" closeButton />
 
   <v-app>
     <div>
