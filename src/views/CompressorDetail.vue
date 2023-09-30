@@ -1,8 +1,8 @@
 <template>
-  <v-row style="margin: 3px">
-    <v-col cols="12">
+     
+     <div style="padding: 20px">
       <main
-        class="main-area scrollable text-center flex-grow-1 flex-shrink-0 overflow-auto"
+        class="main-area"
       >
         <div class="main-area-aside d-flex align-start">
           <div class="sidebar-wrapper">
@@ -117,7 +117,6 @@
 
         <img src="@/assets/machine-map.png" />
       </main>
-    </v-col>
 
     <!-- dialogs --> 
     <v-dialog persistent v-model="addLineDialog" width="auto">
@@ -239,95 +238,40 @@
       </v-card>
     </v-dialog>
 
-    <!-- draggable -->
-    <!-- <VueDragResize
-        v-for="compressor in compressors"
-        :key="compressor.id"
-        :isActive="false"
-        :w="250"
-        :h="110"
-        v-on:resizing="resize"
-        v-on:dragging="resize"
-        class="line-canvas"
-      >
-        <div class="comporessor-wrapper">
-          <div
-            class="line-list-wrapper overflow-hidden"
-            style="border-top: 1px solid #f1f5f9"
-          >
-            <div class="v-list-item v-list-item">
-              <div class="v-list-item__icon">
-                <v-img
-                  v-if="compressor.status === 1"
-                  width="35"
-                  src="@/assets/fanmotion.gif"
-                ></v-img>
-                <v-img v-else width="35" src="@/assets/fanStop.png"></v-img>
-              </div>
-  
-              <div
-                class="v-list-item__content"
-                style="margin-left: -15px; padding-bottom: 3px"
-              >
-                <div class="v-list-item__title d-flex align-center">
-                  <span style="font-size: 15px; font-weight: 600"
-                    >Compressor 2</span
-                  >
-  
-                  <div class="ml-2">
-                    <div
-                      v-if="compressor.status === 1"
-                      class="machine-status-label label-running"
-                    >
-                      Running
-                    </div>
-                    <div v-else class="machine-status-label label-stop">
-                      Stopped
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="v-list-item__subtitle"
-                  style="font-size: 14px; color: #6b7280"
-                >
-                  Line casting 1
-                </div>
-  
-                <div class="my-1">
-                  <button
-                    class="machine-action-button mr-2"
-                    @click="machineStatus = !machineStatus"
-                  >
-                    <v-icon v-if="compressor.status === 1">mdi-stop</v-icon>
-                    <v-icon v-else>mdi-play</v-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </VueDragResize> -->
-  </v-row>
+
+      <!-- draggable -->
+      <div class="container">
+          <div class="target">Vue Moveable</div>
+          <Moveable
+              className="moveable"
+              v-bind:target="['.target']"
+              v-bind:draggable="true" 
+              @drag="onDrag" 
+              y-axis="200"
+              x-axis="200"
+          />
+      </div>
+
+     </div> 
 </template>
       
   <script>
-import VueDragResize from "vue-drag-resize";
 import { mapGetters } from "vuex";
-import { toast } from "vue-sonner";
-import API from "@/config/api";
-import axios from 'axios'
+import { toast } from "vue-sonner"; 
+import Moveable from 'vue3-moveable';
+
+
+
 
 
 export default {
   name: "CompressorDetailView",
-  components: {},
+  components: {
+    Moveable
+  },
   data() {
     return { 
-      is_run: false,
-      width: 0,
-      height: 0,
-      top: 0,
-      left: 0,
+      is_run: false, 
       machineStatus: true,
       showSidebar: true, 
       addLineDialog: false,
@@ -348,17 +292,16 @@ export default {
       },
     };
   },
-  methods: {
-    resize(newRect) {
-      this.width = newRect.width;
-      this.height = newRect.height;
-      this.top = newRect.top;
-      this.left = newRect.left;
-    },
-    handleDrag({ target, transform }) {
-      console.log("onDrag", transform);
-      target.style.transform = transform;
-    },
+  methods: { 
+    onDrag({ target, transform }) {
+        target.style.transform = transform;
+      },
+      onScale({ target, drag }) {
+        target.style.transform = drag.transform;
+      },
+      onRotate({ target, drag }) {
+        target.style.transform = drag.transform;
+      },
     getPlantById(){
       this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id); 
     },
@@ -462,12 +405,10 @@ export default {
 }
 
 /* MAIN AREA */
-.main-area {
-  /* overflow-x: hidden;
-    overflow-y: hidden; */
+.main-area { 
   border-radius: 10px;
   width: 100%;
-  height: 800px;
+  height: 650px;
   --dot-bg: black;
   --dot-color: white;
   --dot-size: 1px;
@@ -564,4 +505,29 @@ export default {
   background-color: #f7f8f8;
   border: 1px solid #e5e5e5;
 }
+
+/* draggable */
+
+.root {
+  position: relative;
+}
+.container {
+  position: relative;
+  margin-top: 50px;
+}
+.target {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 150px;
+  left: 100px;
+  line-height: 100px;
+  text-align: center;
+  background: #ee8;
+  color: #333;
+  font-weight: bold;
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
 </style>

@@ -1,8 +1,6 @@
 body {
   margin: 0;
-  padding: 0;
-  overflow-x: scroll;
-  overflow-y: scroll;
+  padding: 0; 
 }
 
 /* ===== Scrollbar CSS ===== */

@@ -95,9 +95,7 @@ export default {
           if (res.data.message == "success add line") {
             toast.success("Line created", {
               duration: 800,
-            }); 
-
-            return true
+            });  
           }
         })
         .catch((e) => {
@@ -111,8 +109,7 @@ export default {
           if (res.data.message == "success delete line") {
             toast.success("Line deleted", {
               duration: 800,
-            }); 
-            return true
+            });  
           }
         })
         .catch((e) => {
