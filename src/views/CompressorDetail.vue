@@ -86,7 +86,7 @@
                       <v-avatar color="transparent">
                         <div>
                           <v-img
-                            v-if="compressor.status !== null"
+                            v-if="+compressor.status"
                             width="35"
                             src="@/assets/fanmotion.gif"
                           ></v-img>
@@ -100,11 +100,19 @@
                     </template>
 
                     <template v-slot:append>
-                      <button class="machine-action-button mr-2">
-                        <v-icon v-if="compressor.status !== null"
-                          >mdi-stop</v-icon
-                        >
-                        <v-icon v-else>mdi-play</v-icon>
+                      <button
+                        v-if="+compressor.status"
+                        class="machine-action-button mr-2"
+                        @click="turnOffMachine(compressor.machine_id)"
+                      >
+                        <v-icon>mdi-stop</v-icon>
+                      </button>
+                      <button
+                        v-else
+                        class="machine-action-button mr-2"
+                        @click="turnOnMachine(compressor.machine_id)"
+                      >
+                        <v-icon>mdi-play</v-icon>
                       </button>
                     </template>
                   </v-list-item>
@@ -241,16 +249,16 @@
               class="text-none text-subtitle-1 rounded-lg float-right"
               color="#5865f2"
               variant="flat"
-              @click="addMachineAction"
+              @click="setMachinePosition"
               :loading="isLoading"
             >
-              Create Machine
+              Set machine position
             </v-btn>
             <v-btn
               class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
               color="#f3f4f6"
               variant="flat"
-              @click="addLineDialog = false"
+              @click="addMachineDialog = false"
             >
               Cancel
             </v-btn>
@@ -259,35 +267,166 @@
       </v-card>
     </v-dialog>
 
+    <VueDragResize
+      v-if="isMachineReadyToSetThePosition"
+      class="draggable"
+      :isActive="false"
+      :isResizable="false"
+      :isDraggable="true"
+      :w="300"
+      :h="55"
+      :x="800"
+      :y="400"
+      v-on:resizing="resize"
+      v-on:dragging="resize"
+      style="cursor: move"
+    >
+      <div class="machine-card-list">
+        <div class="d-flex justify-space-between align-center pa-1">
+          <div class="d-flex align-center">
+            <div class="machine-status mx-2">
+              <v-avatar color="transparent">
+                <div>
+                  <v-img width="35" src="@/assets/fanStop.png"></v-img>
+                </div>
+              </v-avatar>
+            </div>
+            <div class="machine-description mt-1">
+              <h2>name</h2>
+              <span>Line nya</span>
+            </div>
+          </div>
+          <div class="machine-action">
+            <button
+              class="machine-action-button mr-2"
+              @click="addMachineAction"
+            >
+              Save machine
+            </button>
+          </div>
+        </div>
+        <div class="mx-4"></div>
+      </div>
+    </VueDragResize>
+
     <!-- draggable -->
-    <!-- <div class="container">
-      <div class="target">Vue Moveable</div>
-      <Moveable
-        className="moveable"
-        v-bind:target="['.target']"
-        v-bind:draggable="true"
-        @drag="onDrag"
-        y-axis="200"
-        x-axis="200"
-      />
-    </div> -->
+    <div v-if="machines">
+      <VueDragResize
+        v-for="machine in machines"
+        :key="machine.machine_nm"
+        class="draggable"
+        :isActive="false"
+        :isResizable="false"
+        :isDraggable="selectedEditableMachine == machine.machine_id"
+        :w="300"
+        :h="55"
+        :x="machine.x_axis"
+        :y="machine.y_axis"
+        v-on:resizing="resize"
+        v-on:dragging="resize"
+      >
+        <div
+          class="machine-card-list"
+          :style="`${
+            +machine.reg_value
+              ? 'border: 3px solid #10b981'
+              : 'border: 3px solid #ef4444'
+          }`"
+        >
+          <div class="d-flex justify-space-between align-center pa-1">
+            <div class="d-flex align-center">
+              <div class="machine-status mx-2">
+                <v-avatar color="transparent">
+                  <div>
+                    <v-img
+                      v-if="+machine.reg_value"
+                      width="35"
+                      src="@/assets/fanmotion.gif"
+                    ></v-img>
+                    <v-img v-else width="35" src="@/assets/fanStop.png"></v-img>
+                  </div>
+                </v-avatar>
+              </div>
+              <div class="machine-description mt-1">
+                <h2>{{ machine.machine_nm }}</h2>
+                <span>Line {{ machine.line_nm }}</span>
+              </div>
+            </div>
+            <div class="machine-action">
+              <button
+                v-if="selectedEditableMachine == machine.machine_id"
+                class="machine-action-button mr-2"
+                @click="editMachine"
+              >
+                <v-icon>mdi-check</v-icon>
+              </button>
+              <button
+                v-else
+                class="machine-action-button mr-2"
+                @click="
+                  () => {
+                    selectedEditableMachine = machine.machine_id;
+                    selectedLineID = machine.line_id;
+                  }
+                "
+              >
+                <v-icon>mdi-cog-sync</v-icon>
+              </button>
+              <button
+                v-if="selectedEditableMachine == machine.machine_id"
+                @click="deleteMachine(machine.machine_id)"
+                class="machine-action-button mr-2"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </button>
+              <!-- <button class="machine-action-button mr-2">
+                <v-icon>mdi-play</v-icon>
+              </button> -->
+
+              <button
+                v-if="+machine.status"
+                class="machine-action-button mr-2"
+                @click="turnOffMachine(machine.machine_id)"
+              >
+                <v-icon>mdi-stop</v-icon>
+              </button>
+              <button
+                v-else
+                class="machine-action-button mr-2"
+                @click="turnOnMachine(machine.machine_id)"
+              >
+                <v-icon>mdi-play</v-icon>
+              </button>
+            </div>
+          </div>
+          <div class="mx-4"></div>
+        </div>
+      </VueDragResize>
+    </div>
   </div>
 </template>
       
   <script>
 import { mapGetters } from "vuex";
 import { toast } from "vue-sonner";
-import Moveable from "vue3-moveable";
 import Multiselect from "@vueform/multiselect";
+import VueDragResize from "vue3-drag-resize";
 
 export default {
   name: "CompressorDetailView",
   components: {
-    Moveable,
     Multiselect,
+    VueDragResize,
   },
   data() {
     return {
+      moveable: {
+        width: 0,
+        height: 0,
+        top: 0,
+        left: 0,
+      },
+      selectedEditableMachine: null,
       is_run: false,
       machineStatus: true,
       showSidebar: true,
@@ -301,25 +440,22 @@ export default {
         y_axis: 0,
         x_axis: 0,
       },
-      moveable: {
-        bounds: { left: 0, right: 780, top: 0, bottom: 400 },
-        draggable: true,
-        dragArea: true,
-        snappable: true,
+      tempMachine: {
+        machine_nm: "",
+        y_axis: 0,
+        x_axis: 0,
       },
+      isMachineReadyToSetThePosition: false,
       paramsValue: null,
       options: null,
     };
   },
   methods: {
-    onDrag({ target, transform }) {
-      target.style.transform = transform;
-    },
-    onScale({ target, drag }) {
-      target.style.transform = drag.transform;
-    },
-    onRotate({ target, drag }) {
-      target.style.transform = drag.transform;
+    resize(newRect) {
+      this.moveable.width = newRect.width;
+      this.moveable.height = newRect.height;
+      this.moveable.top = newRect.top;
+      this.moveable.left = newRect.left;
     },
     getPlantById() {
       this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
@@ -360,23 +496,88 @@ export default {
         },
       });
     },
+    getMachines() {
+      this.$store.dispatch("GET_MACHINES");
+    },
     addMachine(id) {
       this.addMachineDialog = true;
       this.selectedLineID = id;
+      this.mapParamsDataToSelectOptionValue();
     },
-    addMachineAction() {
+    setMachinePosition() {
+      // tempMachine: {
+      //   machine_nm: "",
+      //   y_axis: 0,
+      //   x_axis: 0,
+      // },
+
+      this.isMachineReadyToSetThePosition = true;
+      this.addMachineDialog = false;
+    },
+    async addMachineAction() {
       const data = {
         line_id: this.selectedLineID,
         machine_nm: this.machine.machine_nm,
-        x_axis: this.machine.x_axis,
-        y_axis: this.machine.y_axis,
+        x_axis: this.moveable.left,
+        y_axis: this.moveable.top,
         param_ids: this.paramsValue,
       };
 
       this.$store.dispatch("ADD_MACHINE", data);
-      this.addMachineDialog = false;
-      this.getPlantById();
+
+      setTimeout(() => {
+        this.getMachines();
+        this.getPlantById();
+        this.addMachineDialog = false;
+        this.isMachineReadyToSetThePosition = false;
+      }, 1000);
     },
+    editMachine() {
+      const data = {
+        line_id: this.selectedLineID,
+        // machine_nm: this.machine.machine_nm,
+        x_axis: this.moveable.left,
+        y_axis: this.moveable.top,
+        // param_ids: this.paramsValue,
+      };
+
+      this.$store.dispatch("EDIT_MACHINE", {
+        id: this.selectedEditableMachine,
+        data: data,
+      });
+      this.getPlantById();
+      this.getMachines();
+      this.selectedEditableMachine = null;
+    },
+    deleteMachine(id) {
+      toast("Are you sure to delete this machine?", {
+        action: {
+          label: "Sure",
+          onClick: () => {
+            this.$store.dispatch("DELETE_MACHINE", { id: id });
+            setTimeout(() => {
+              this.getMachines();
+              this.getPlantById();
+            }, 1000);
+          },
+        },
+      });
+    },
+    turnOnMachine(machine_id) {
+      this.$store.dispatch("TURN_ON_MACHINE", { machine_id: machine_id });
+      setTimeout(() => {
+        this.getMachines();
+        this.getPlantById();
+      }, 1000);
+    },
+    turnOffMachine(machine_id) {
+      this.$store.dispatch("TURN_OFF_MACHINE", { machine_id: machine_id });
+      setTimeout(() => {
+        this.getMachines();
+        this.getPlantById();
+      }, 1000);
+    },
+
     async mapParamsDataToSelectOptionValue() {
       var tempOptions = [];
       await this.parameters.map((i) => {
@@ -401,9 +602,10 @@ export default {
   mounted() {
     this.getPlantById();
     this.getParams();
+    this.getMachines();
   },
   computed: {
-    ...mapGetters(["plant", "parameters"]),
+    ...mapGetters(["plant", "parameters", "machines", "apiResponse"]),
   },
 };
 </script>
@@ -420,12 +622,6 @@ export default {
   margin-top: -4px;
   color: #6b7280;
   text-align: left;
-}
-.moveable {
-  width: 100px;
-  height: 100px;
-  background-color: coral;
-  z-index: 99999;
 }
 
 /* plant */
@@ -462,8 +658,8 @@ export default {
 .main-area {
   border-radius: 10px;
   border: 1px solid #f3f4f6;
-  width: auto;
-  height: 100vh;
+  width: 1700px;
+  height: 1000px;
   --dot-bg: black;
   --dot-color: white;
   --dot-size: 1px;
@@ -481,10 +677,10 @@ export default {
       center / var(--dot-space) var(--dot-space),
     var(--dot-color); */
   background-image: url("../assets/machine-map.png");
-
-  background-position: right;
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  /* background-attachment: fixed; */
 }
 .main-area > img {
   position: relative;
@@ -545,6 +741,27 @@ export default {
 
 /* machines */
 
+.machine-card-list {
+  background-color: #fff;
+  max-width: 300px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  border-radius: 8px;
+}
+
+.machine-description > h2 {
+  font-size: 14px;
+  margin-top: 5px;
+  line-height: 10px;
+  color: #1f2937;
+  font-weight: 500;
+}
+.machine-description > span {
+  font-size: 12.5px;
+  color: #9ca3af;
+  font-weight: normal;
+}
+
 .machine-status-label {
   padding: 4px 7px;
   border-radius: 5px;
@@ -567,26 +784,10 @@ export default {
 }
 
 /* draggable */
-
-.root {
-  position: relative;
-}
-.container {
-  position: relative;
-  margin-top: 50px;
-}
-.target {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  top: 150px;
-  left: 100px;
-  line-height: 100px;
-  text-align: center;
-  background: #ee8;
-  color: #333;
-  font-weight: bold;
-  border: 1px solid #333;
-  box-sizing: border-box;
+.draggable {
+  padding: 0px 4px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
 }
 </style>

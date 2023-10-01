@@ -7,10 +7,18 @@ export default {
     plant: null,
     plantDetail: [],
     parameters: [],
+    machines: [],
+    apiResponse: "init",
   },
   mutations: {
+    setApiResponse(state, payload) {
+      state.apiResponse = payload;
+    },
     setPlantsData(state, payload) {
       state.plants = payload;
+    },
+    setMachinesData(state, payload) {
+      state.machines = payload;
     },
     setPlantData(state, payload) {
       state.plant = payload;
@@ -23,8 +31,14 @@ export default {
     },
   },
   getters: {
+    apiResponse: (state) => {
+      return state.apiResponse;
+    },
     plants: (state) => {
       return state.plants;
+    },
+    machines: (state) => {
+      return state.machines;
     },
     plant: (state) => {
       return state.plant;
@@ -133,12 +147,40 @@ export default {
     },
 
     // MACHINES ACTION
+    async GET_MACHINES(context) {
+      await API()
+        .get("/master/machines/view")
+        .then((res) => {
+          context.commit("setMachinesData", res.data.data);
+          context.commit("setApiResponse", "success");
+        })
+        .catch((e) => {
+          toast.error("Error");
+          console.log(e);
+        });
+    },
     ADD_MACHINE(context, payload) {
       API()
         .post("/master/machines/add", payload)
         .then((res) => {
           if (res.data.message == "success add machine") {
             toast.success("Machine created", {
+              duration: 800,
+            });
+            context.commit("setApiResponse", "success");
+          }
+        })
+        .catch((e) => {
+          toast.error("Error");
+          console.log(e);
+        });
+    },
+    EDIT_MACHINE(context, { data, id }) {
+      API()
+        .put(`/master/machines/edit/${id}`, data)
+        .then((res) => {
+          if (res.data.message == "success update machine") {
+            toast.success("Machine updated", {
               duration: 800,
             });
           }
@@ -148,15 +190,44 @@ export default {
           console.log(e);
         });
     },
-    DELETE_MACHINE(context, payload) {
+    DELETE_MACHINE(context, { id }) {
       API()
-        .delete(`/master/machine/delete/${payload}`)
+        .delete(`/master/machines/delete/${id}`)
         .then((res) => {
-          if (res.data.message == "success delete line") {
-            toast.success("Line deleted", {
+          if (res.data.message == "success delete machine") {
+            toast.success("Machine deleted", {
               duration: 800,
             });
-            context.dispatch("FETCH_PLANT");
+          }
+        })
+        .catch((e) => {
+          toast.error("Error");
+          console.log(e);
+        });
+    },
+    TURN_ON_MACHINE(context, { machine_id }) {
+      API()
+        .post(`/iot/compressor/on/${machine_id}`)
+        .then((res) => {
+          if (res.data.message == "Success to turn ON compressor") {
+            toast.success("Machine turned on", {
+              duration: 800,
+            });
+          }
+        })
+        .catch((e) => {
+          toast.error("Error");
+          console.log(e);
+        });
+    },
+    TURN_OFF_MACHINE(context, { machine_id }) {
+      API()
+        .post(`/iot/compressor/off/${machine_id}`)
+        .then((res) => {
+          if (res.data.message == "Success to turn OFF compressor") {
+            toast.success("Machine turned off", {
+              duration: 800,
+            });
           }
         })
         .catch((e) => {
