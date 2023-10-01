@@ -1,80 +1,44 @@
 <template>
-  <div class="container">
-      <div class="target">Vue Moveable</div>
-      <Moveable
-          className="moveable"
-          v-bind:target="['.target']"
-          v-bind:draggable="true"
-          v-bind:scalable="true"
-          v-bind:rotatable="true"
-          @drag="onDrag"
-          @scale="onScale"
-          @rotate="onRotate"
-      />
+  <div>
+    <VueDragResize
+      :isActive="true"
+      :w="200"
+      :h="200"
+      v-on:resizing="resize"
+      v-on:dragging="resize"
+    >
+      <h3>Hello World!</h3>
+      <p>{{ top }} х {{ left }}</p>
+      <p>{{ width }} х {{ height }}</p>
+    </VueDragResize>
   </div>
-  </template>
+</template>
   <script>
-  import Moveable from 'vue3-moveable';
-  
-  export default {
-    name: 'app',
-    components: {
-      Moveable,
+import VueDragResize from "vue3-drag-resize";
+
+export default {
+  name: "app",
+  components: {
+    VueDragResize,
+  },
+  data() {
+    return {
+      width: 0,
+      height: 0,
+      top: 0,
+      left: 0,
+    };
+  },
+  methods: {
+    resize(newRect) {
+      this.width = newRect.width;
+      this.height = newRect.height;
+      this.top = newRect.top;
+      this.left = newRect.left;
     },
-    methods: {
-      onDrag({ target, transform }) {
-        target.style.transform = transform;
-      },
-      onScale({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-      onRotate({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-    }
-  }
-  </script>
+  },
+};
+</script>
 
 <style>
-
-.description {
-  padding: 10px;
-}
-.root {
-  position: relative;
-}
-.container {
-  position: relative;
-  margin-top: 50px;
-}
-.target {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  top: 150px;
-  left: 100px;
-  line-height: 100px;
-  text-align: center;
-  background: #ee8;
-  color: #333;
-  font-weight: bold;
-  border: 1px solid #333;
-  box-sizing: border-box;
-}
-
-.target1 {
-  left: 120px;
-  top: 120px;
-}
-
-.target2 {
-  left: 300px;
-  top: 140px;
-}
-
-.target3 {
-  left: 180px;
-  top: 250px;
-}
-
 </style>
