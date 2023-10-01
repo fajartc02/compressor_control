@@ -1,42 +1,41 @@
 <template>
-  <div class="container">
-      <div class="target">Vue Moveable</div>
-      <Moveable
-          className="moveable"
-          v-bind:target="['.target']"
-          v-bind:draggable="true"
-          v-bind:scalable="true"
-          v-bind:rotatable="true"
-          @drag="onDrag"
-          @scale="onScale"
-          @rotate="onRotate"
-      />
+  <div>
+    <div class="target">Vue Moveable</div>
+    <Moveable
+      className="moveable"
+      v-bind:target="['.target']"
+      v-bind:draggable="true"
+      v-bind:scalable="true"
+      v-bind:rotatable="true"
+      @drag="onDrag"
+      @scale="onScale"
+      @rotate="onRotate"
+    />
   </div>
-  </template>
+</template>
   <script>
-  import Moveable from 'vue3-moveable';
-  
-  export default {
-    name: 'app',
-    components: {
-      Moveable,
+import Moveable from "vue3-moveable";
+
+export default {
+  name: "app",
+  components: {
+    Moveable,
+  },
+  methods: {
+    onDrag({ target, transform }) {
+      target.style.transform = transform;
     },
-    methods: {
-      onDrag({ target, transform }) {
-        target.style.transform = transform;
-      },
-      onScale({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-      onRotate({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-    }
-  }
-  </script>
+    onScale({ target, drag }) {
+      target.style.transform = drag.transform;
+    },
+    onRotate({ target, drag }) {
+      target.style.transform = drag.transform;
+    },
+  },
+};
+</script>
 
 <style>
-
 .description {
   padding: 10px;
 }
@@ -76,5 +75,4 @@
   left: 180px;
   top: 250px;
 }
-
 </style>

@@ -1,124 +1,131 @@
 <template>
-     
-     <div style="padding: 20px">
-      <main
-        class="main-area"
-      >
-        <div class="main-area-aside d-flex align-start">
-          <div class="sidebar-wrapper">
-            <div
-              class="d-flex justify-space-between sidebar-wrapper-header align-top"
-            >
-              <div class="d-flex flex-column justify-start pl-1">
-                <h2 v-if="plant" class="plant-name">
-                  <span> {{ plant.plant_nm }} </span>
-                </h2>
-                <span class="plant-description"> Manage your plant </span>
-              </div>
-              <div>
-                <router-link to="/compressor">
-                  <button class="button-icon mr-2">
-                    <v-icon>mdi-arrow-left-thin</v-icon>
-                  </button>
-                </router-link>
-                <button class="button-icon mr-2" @click="addLineDialog = true">
-                  <v-icon>mdi-folder-plus</v-icon>
-                </button>
-              </div>
-            </div>
-
-            <div v-if="showSidebar">
-              <div v-if="plant">
-                <div
-                  v-for="line in plant.linesData"
-                  :key="line.line_id"
-                  class="sidebar mt-2"
-                >
-                  <div class="line-heading" style="padding: 4px 10px">
-                    <div class="d-flex flex-row align-center justify-start">
-                      <h4 
-                        style="margin-left: 5px; font-size: 13px;"
-                      >
-                        LINE <span> {{ line.line_snm }} </span>
-                      </h4>
-                      <div
-                        class="ml-2 rounded-pill pl-2 pr-2"
-                        style="
-                          background-color: #fff3e0;
-                          color: #fb8c00;
-                          font-size: 14px;
-                          font-weight: 500;
-                        "
-                      >
-                        {{ line.machines.length }} machine
-                      </div>
-                    </div>
-                    <div>
-                      <v-btn icon="mdi-delete" variant="text" size="small" @click="deleteLine(line.line_id)"></v-btn>
-                      <v-btn icon="mdi-plus" variant="text" size="small" @click="addMachine(line.line_id)"></v-btn>
-                    </div> 
-                  </div>
-    
-                  <v-list
-                    class="compressor-wrapper"
-                    style="padding-top: 0; padding-bottom: 8px"
-                  >
-                    <v-list-item
-                      style="
-                        padding: 8px 8px;
-                        border-top: 1px solid #f1f5f9;
-                        text-align: left;
-                      "
-                      v-for="compressor in line.machines"
-                      :title="compressor.machine_nm"
-                      :key="compressor.machine_nm"
-                      subtitle="compressor"
-                    >
-                      <template v-slot:prepend>
-                        <v-avatar color="transparent">
-                          <div>
-                            <v-img
-                              v-if="compressor.status !== null"
-                              width="35"
-                              src="@/assets/fanmotion.gif"
-                            ></v-img>
-                            <v-img
-                              v-else
-                              width="35"
-                              src="@/assets/fanStop.png"
-                            ></v-img>
-                          </div>
-                        </v-avatar>
-                      </template>
-    
-                      <template v-slot:append>
-                        <button class="machine-action-button mr-2">
-                          <v-icon v-if="compressor.status !== null"
-                            >mdi-stop</v-icon
-                          >
-                          <v-icon v-else>mdi-play</v-icon>
-                        </button>
-                      </template>
-                    </v-list-item>
-                  </v-list>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <button
-            class="button-icon mr-2 ml-3"
-            @click="showSidebar = !showSidebar"
+  <div style="padding: 20px">
+    <main class="main-area">
+      <div class="main-area-aside d-flex align-start">
+        <div class="sidebar-wrapper">
+          <div
+            class="d-flex justify-space-between sidebar-wrapper-header align-top"
           >
-            <v-icon v-if="showSidebar">mdi-unfold-more-vertical</v-icon>
-            <v-icon v-else>mdi-unfold-less-vertical</v-icon>
-          </button>
+            <div class="d-flex flex-column justify-start pl-1">
+              <h2 v-if="plant" class="plant-name">
+                <span> {{ plant.plant_nm }} </span>
+              </h2>
+              <span class="plant-description"> Manage your plant </span>
+            </div>
+            <div>
+              <router-link to="/compressor">
+                <button class="button-icon mr-2">
+                  <v-icon>mdi-arrow-left-thin</v-icon>
+                </button>
+              </router-link>
+              <button class="button-icon mr-2" @click="addLineDialog = true">
+                <v-icon>mdi-folder-plus</v-icon>
+              </button>
+            </div>
+          </div>
+
+          <div v-if="showSidebar">
+            <div
+              v-if="plant"
+              style="max-height: 500px; overflow-y: scroll; margin-top: 10px"
+            >
+              <div
+                v-for="line in plant.linesData"
+                :key="line.line_id"
+                class="sidebar mt-2"
+              >
+                <div class="line-heading" style="padding: 4px 10px">
+                  <div class="d-flex flex-row align-center justify-start">
+                    <h4 style="margin-left: 5px; font-size: 13px">
+                      LINE <span> {{ line.line_snm }} </span>
+                    </h4>
+                    <div
+                      class="ml-2 rounded-pill pl-2 pr-2"
+                      style="
+                        background-color: #fff3e0;
+                        color: #fb8c00;
+                        font-size: 14px;
+                        font-weight: 500;
+                      "
+                    >
+                      {{ line.machines.length }} machine
+                    </div>
+                  </div>
+                  <div>
+                    <v-btn
+                      icon="mdi-delete"
+                      variant="text"
+                      size="small"
+                      @click="deleteLine(line.line_id)"
+                    ></v-btn>
+                    <v-btn
+                      icon="mdi-plus"
+                      variant="text"
+                      size="small"
+                      @click="addMachine(line.line_id)"
+                    ></v-btn>
+                  </div>
+                </div>
+
+                <v-list
+                  class="compressor-wrapper"
+                  style="padding-top: 0; padding-bottom: 8px"
+                >
+                  <v-list-item
+                    style="
+                      padding: 8px 8px;
+                      border-top: 1px solid #f1f5f9;
+                      text-align: left;
+                    "
+                    v-for="compressor in line.machines"
+                    :title="compressor.machine_nm"
+                    :key="compressor.machine_nm"
+                    subtitle="compressor"
+                  >
+                    <template v-slot:prepend>
+                      <v-avatar color="transparent">
+                        <div>
+                          <v-img
+                            v-if="compressor.status !== null"
+                            width="35"
+                            src="@/assets/fanmotion.gif"
+                          ></v-img>
+                          <v-img
+                            v-else
+                            width="35"
+                            src="@/assets/fanStop.png"
+                          ></v-img>
+                        </div>
+                      </v-avatar>
+                    </template>
+
+                    <template v-slot:append>
+                      <button class="machine-action-button mr-2">
+                        <v-icon v-if="compressor.status !== null"
+                          >mdi-stop</v-icon
+                        >
+                        <v-icon v-else>mdi-play</v-icon>
+                      </button>
+                    </template>
+                  </v-list-item>
+                </v-list>
+              </div>
+            </div>
+          </div>
         </div>
+        <button
+          class="button-icon mr-2 ml-3"
+          @click="showSidebar = !showSidebar"
+        >
+          <v-icon v-if="showSidebar">mdi-unfold-more-vertical</v-icon>
+          <v-icon v-else>mdi-unfold-less-vertical</v-icon>
+        </button>
+      </div>
 
-        <img src="@/assets/machine-map.png" />
-      </main>
+      <!-- <img src="@/assets/machine-map.png" /> -->
+    </main>
 
-    <!-- dialogs --> 
+    <!-- add line dialogs -->
     <v-dialog persistent v-model="addLineDialog" width="auto">
       <v-card
         class="mx-auto rounded-lg"
@@ -149,7 +156,6 @@
             <p class="form-label">Line sname</p>
             <input type="text" v-model="line_sname" class="form-input" />
           </div>
-           
         </div>
 
         <v-sheet
@@ -205,9 +211,24 @@
         <div class="w-full mt-5 mb-10 mx-5">
           <div>
             <p class="form-label">Machine name</p>
-            <input type="text" v-model="machine.machine_nm" class="form-input" />
-          </div> 
-           
+            <input
+              type="text"
+              v-model="machine.machine_nm"
+              class="form-input"
+            />
+          </div>
+
+          <!-- <Multiselect v-model="value" :options="options" /> -->
+          <div class="mt-3">
+            <p class="form-label">Select parameters</p>
+            <Multiselect
+              v-model="paramsValue"
+              mode="tags"
+              :close-on-select="false"
+              :searchable="true"
+              :options="options"
+            />
+          </div>
         </div>
 
         <v-sheet
@@ -238,51 +259,47 @@
       </v-card>
     </v-dialog>
 
-
-      <!-- draggable -->
-      <div class="container">
-          <div class="target">Vue Moveable</div>
-          <Moveable
-              className="moveable"
-              v-bind:target="['.target']"
-              v-bind:draggable="true" 
-              @drag="onDrag" 
-              y-axis="200"
-              x-axis="200"
-          />
-      </div>
-
-     </div> 
+    <!-- draggable -->
+    <!-- <div class="container">
+      <div class="target">Vue Moveable</div>
+      <Moveable
+        className="moveable"
+        v-bind:target="['.target']"
+        v-bind:draggable="true"
+        @drag="onDrag"
+        y-axis="200"
+        x-axis="200"
+      />
+    </div> -->
+  </div>
 </template>
       
   <script>
 import { mapGetters } from "vuex";
-import { toast } from "vue-sonner"; 
-import Moveable from 'vue3-moveable';
-
-
-
-
+import { toast } from "vue-sonner";
+import Moveable from "vue3-moveable";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   name: "CompressorDetailView",
   components: {
-    Moveable
+    Moveable,
+    Multiselect,
   },
   data() {
-    return { 
-      is_run: false, 
+    return {
+      is_run: false,
       machineStatus: true,
-      showSidebar: true, 
+      showSidebar: true,
       addLineDialog: false,
       addMachineDialog: false,
       selectedLineID: null,
-      line_name: 'name',
-      line_sname: 'sname',
+      line_name: "",
+      line_sname: "",
       machine: {
         machine_nm: "",
-        y_axis: "0",
-        x_axis: "0",
+        y_axis: 0,
+        x_axis: 0,
       },
       moveable: {
         bounds: { left: 0, right: 780, top: 0, bottom: 400 },
@@ -290,38 +307,49 @@ export default {
         dragArea: true,
         snappable: true,
       },
+      paramsValue: null,
+      options: null,
     };
   },
-  methods: { 
+  methods: {
     onDrag({ target, transform }) {
-        target.style.transform = transform;
-      },
-      onScale({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-      onRotate({ target, drag }) {
-        target.style.transform = drag.transform;
-      },
-    getPlantById(){
-      this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id); 
+      target.style.transform = transform;
     },
-    async createLine() {
+    onScale({ target, drag }) {
+      target.style.transform = drag.transform;
+    },
+    onRotate({ target, drag }) {
+      target.style.transform = drag.transform;
+    },
+    getPlantById() {
+      this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
+    },
+    getParams() {
+      const res = this.$store.dispatch("GET_PARAMS");
+      if (res) {
+        this.mapParamsDataToSelectOptionValue();
+      } else {
+        console.log("Error get parameters data");
+      }
+    },
+    createLine() {
       if (!this.line_name && !this.line_sname) {
         toast.error("Please fill all the required fields");
       } else {
-       const data = {
-        plant_id: this.$route.params.id,
-        line_nm: this.line_name,
-        line_snm: this.line_sname,
-       } 
+        const data = {
+          plant_id: this.$route.params.id,
+          line_nm: this.line_name,
+          line_snm: this.line_sname,
+        };
 
-       await this.$store.dispatch("ADD_LINE", data);
-       this.getPlantById()
-       this.addLineDialog = false
- 
+        this.$store.dispatch("ADD_LINE", data);
+        this.getPlantById();
+        this.addLineDialog = false;
+        this.line_name = "";
+        this.line_sname = "";
       }
-    }, 
-    deleteLine(id){  
+    },
+    deleteLine(id) {
       toast("Are you sure to delete this line?", {
         action: {
           label: "Sure",
@@ -332,30 +360,56 @@ export default {
         },
       });
     },
-    addMachine(id){
+    addMachine(id) {
       this.addMachineDialog = true;
-      this.selectedLineID = id
+      this.selectedLineID = id;
     },
-    addMachineAction(){
+    addMachineAction() {
       const data = {
         line_id: this.selectedLineID,
-        machine_nm: this.machine.machine_nm, 
-        x_axis: this.machine.x_axis, 
-        y_axis: this.machine.y_axis, 
-      }
-      
-      this.$store.dispatch("ADD_MACHINE", data); 
-    }
+        machine_nm: this.machine.machine_nm,
+        x_axis: this.machine.x_axis,
+        y_axis: this.machine.y_axis,
+        param_ids: this.paramsValue,
+      };
+
+      this.$store.dispatch("ADD_MACHINE", data);
+      this.addMachineDialog = false;
+      this.getPlantById();
+    },
+    async mapParamsDataToSelectOptionValue() {
+      var tempOptions = [];
+      await this.parameters.map((i) => {
+        var opt = { value: i.client_hdl, label: i.dev_name };
+        tempOptions.push(opt);
+      });
+
+      this.options = tempOptions;
+    },
+    handleCreateParams: async (option, select$) => {
+      // Async request (eg. for validating)
+      // await new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve();
+      //   }, 1000);
+      // });
+      // Modifying option label
+      // option.label = option.label + " - confirmed";
+      // return option;
+    },
   },
   mounted() {
-    this.getPlantById() 
+    this.getPlantById();
+    this.getParams();
   },
   computed: {
-    ...mapGetters(["plant"]),
+    ...mapGetters(["plant", "parameters"]),
   },
 };
 </script>
-    
+
+
+<style src="@vueform/multiselect/themes/default.css"></style>    
   <style scoped>
 .plant-name {
   font-size: 18px;
@@ -405,15 +459,16 @@ export default {
 }
 
 /* MAIN AREA */
-.main-area { 
+.main-area {
   border-radius: 10px;
-  width: 100%;
-  height: 650px;
+  border: 1px solid #f3f4f6;
+  width: auto;
+  height: 100vh;
   --dot-bg: black;
   --dot-color: white;
   --dot-size: 1px;
   --dot-space: 22px;
-  background: linear-gradient(
+  /* background: linear-gradient(
         90deg,
         var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
         transparent 1%
@@ -424,7 +479,12 @@ export default {
         transparent 1%
       )
       center / var(--dot-space) var(--dot-space),
-    var(--dot-color);
+    var(--dot-color); */
+  background-image: url("../assets/machine-map.png");
+
+  background-position: right;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 .main-area > img {
   position: relative;
@@ -529,5 +589,4 @@ export default {
   border: 1px solid #333;
   box-sizing: border-box;
 }
-
 </style>
