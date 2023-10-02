@@ -391,7 +391,7 @@
                 class="view-mode"
               >
                 <button
-                  v-if="!+machine.reg_value"
+                  v-if="+machine.reg_value"
                   class="machine-action-button mr-2"
                   @click="turnOffMachine(machine.machine_id)"
                 >
@@ -405,50 +405,6 @@
                   <v-icon>mdi-play</v-icon>
                 </button>
               </div>
-
-              <!-- <button
-                v-if="selectedEditableMachine == machine.machine_id"
-                class="machine-action-button mr-2"
-                @click="editMachine"
-              >
-                <v-icon>mdi-check</v-icon>
-              </button>
-              <button
-                v-else
-                class="machine-action-button mr-2"
-                @click="
-                  () => {
-                    selectedEditableMachine = machine.machine_id;
-                    selectedLineID = machine.line_id;
-                  }
-                "
-              >
-                <v-icon>mdi-cog-sync</v-icon>
-              </button>
-              <button
-                v-if="selectedEditableMachine == machine.machine_id"
-                @click="deleteMachine(machine.machine_id)"
-                class="machine-action-button mr-2"
-              >
-                <v-icon>mdi-delete</v-icon>
-              </button>
-
-              <div class="view-mode">
-                <button
-                  v-if="!+machine.reg_value"
-                  class="machine-action-button mr-2"
-                  @click="turnOffMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-stop</v-icon>
-                </button>
-                <button
-                  v-else
-                  class="machine-action-button mr-2"
-                  @click="turnOnMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-play</v-icon>
-                </button>
-              </div> -->
             </div>
           </div>
           <div class="mx-4"></div>
