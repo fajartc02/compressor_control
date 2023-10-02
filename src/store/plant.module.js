@@ -4,6 +4,7 @@ import { toast } from "vue-sonner";
 export default {
   state: {
     plants: [],
+    backgroundImage: null,
     plant: null,
     plantDetail: [],
     parameters: [],
@@ -13,6 +14,9 @@ export default {
   mutations: {
     setApiResponse(state, payload) {
       state.apiResponse = payload;
+    },
+    setBackgroundImage(state, payload) {
+      state.backgroundImage = payload;
     },
     setPlantsData(state, payload) {
       state.plants = payload;
@@ -37,6 +41,9 @@ export default {
     plants: (state) => {
       return state.plants;
     },
+    background: (state) => {
+      return state.backgroundImage;
+    },
     machines: (state) => {
       return state.machines;
     },
@@ -56,6 +63,16 @@ export default {
         .get("/master/plants/view")
         .then((res) => {
           context.commit("setPlantsData", res.data.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    GET_PLANT_BACKGROUND(context, { path }) {
+      API()
+        .get(`/image?path=${path}`)
+        .then((res) => {
+          context.commit("setBackgroundImage", res);
         })
         .catch((e) => {
           console.log(e);
