@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 20px">
-    <main class="main-area">
+    <main class="main-area" :style="{ 'background-image': 'url(' + +')' }">
       <div class="main-area-aside d-flex align-start">
         <div class="sidebar-wrapper">
           <div
@@ -130,7 +130,11 @@
         </button>
       </div>
 
-      <!-- <img src="@/assets/machine-map.png" /> -->
+      <img
+        v-if="this.background"
+        :src="`http://localhost:7000/api/v1/image?path=${plant.background}`"
+        alt=""
+      />
     </main>
 
     <!-- add line dialogs -->
@@ -267,6 +271,7 @@
       </v-card>
     </v-dialog>
 
+    <!-- set machine position -->
     <VueDragResize
       v-if="isMachineReadyToSetThePosition"
       class="draggable"
@@ -309,7 +314,7 @@
       </div>
     </VueDragResize>
 
-    <!-- draggable -->
+    <!-- map the machines -->
     <div v-if="machines">
       <VueDragResize
         v-for="machine in machines"
@@ -352,8 +357,56 @@
                 <span>Line {{ machine.line_nm }}</span>
               </div>
             </div>
-            <div class="machine-action">
-              <button
+            <div class="machine-action d-flex">
+              <div class="edit-mode d-flex">
+                <button
+                  v-if="selectedEditableMachine != machine.machine_id"
+                  class="machine-action-button mr-2"
+                  @click="
+                    () => {
+                      selectedEditableMachine = machine.machine_id;
+                      selectedLineID = machine.line_id;
+                    }
+                  "
+                >
+                  <v-icon>mdi-cog-sync</v-icon>
+                </button>
+                <button
+                  v-if="selectedEditableMachine == machine.machine_id"
+                  class="machine-action-button mr-2"
+                  @click="editMachine"
+                >
+                  <v-icon>mdi-check</v-icon>
+                </button>
+                <button
+                  v-if="selectedEditableMachine == machine.machine_id"
+                  @click="deleteMachine(machine.machine_id)"
+                  class="machine-action-button mr-2"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </button>
+              </div>
+              <div
+                v-if="selectedEditableMachine != machine.machine_id"
+                class="view-mode"
+              >
+                <button
+                  v-if="!+machine.reg_value"
+                  class="machine-action-button mr-2"
+                  @click="turnOffMachine(machine.machine_id)"
+                >
+                  <v-icon>mdi-stop</v-icon>
+                </button>
+                <button
+                  v-else
+                  class="machine-action-button mr-2"
+                  @click="turnOnMachine(machine.machine_id)"
+                >
+                  <v-icon>mdi-play</v-icon>
+                </button>
+              </div>
+
+              <!-- <button
                 v-if="selectedEditableMachine == machine.machine_id"
                 class="machine-action-button mr-2"
                 @click="editMachine"
@@ -379,24 +432,23 @@
               >
                 <v-icon>mdi-delete</v-icon>
               </button>
-              <!-- <button class="machine-action-button mr-2">
-                <v-icon>mdi-play</v-icon>
-              </button> -->
 
-              <button
-                v-if="+machine.status"
-                class="machine-action-button mr-2"
-                @click="turnOffMachine(machine.machine_id)"
-              >
-                <v-icon>mdi-stop</v-icon>
-              </button>
-              <button
-                v-else
-                class="machine-action-button mr-2"
-                @click="turnOnMachine(machine.machine_id)"
-              >
-                <v-icon>mdi-play</v-icon>
-              </button>
+              <div class="view-mode">
+                <button
+                  v-if="!+machine.reg_value"
+                  class="machine-action-button mr-2"
+                  @click="turnOffMachine(machine.machine_id)"
+                >
+                  <v-icon>mdi-stop</v-icon>
+                </button>
+                <button
+                  v-else
+                  class="machine-action-button mr-2"
+                  @click="turnOnMachine(machine.machine_id)"
+                >
+                  <v-icon>mdi-play</v-icon>
+                </button>
+              </div> -->
             </div>
           </div>
           <div class="mx-4"></div>
@@ -426,6 +478,7 @@ export default {
         top: 0,
         left: 0,
       },
+      plantBackground: null,
       selectedEditableMachine: null,
       is_run: false,
       machineStatus: true,
@@ -459,6 +512,13 @@ export default {
     },
     getPlantById() {
       this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
+    },
+    getPlantBackgroundImage() {
+      setTimeout(() => {
+        this.$store.dispatch("GET_PLANT_BACKGROUND", {
+          path: this.plant.background,
+        });
+      }, 1500);
     },
     getParams() {
       const res = this.$store.dispatch("GET_PARAMS");
@@ -603,9 +663,13 @@ export default {
     this.getPlantById();
     this.getParams();
     this.getMachines();
+    this.getPlantBackgroundImage();
+    // setTimeout(() => {
+    //   console.log(this.background.data);
+    // }, 1000);
   },
   computed: {
-    ...mapGetters(["plant", "parameters", "machines", "apiResponse"]),
+    ...mapGetters(["plant", "parameters", "machines", "background"]),
   },
 };
 </script>
