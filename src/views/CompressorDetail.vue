@@ -333,7 +333,7 @@
         <div
           class="machine-card-list"
           :style="`${
-            +machine.reg_value
+            +machine.status
               ? 'border: 3px solid #10b981'
               : 'border: 3px solid #ef4444'
           }`"
@@ -344,7 +344,7 @@
                 <v-avatar color="transparent">
                   <div>
                     <v-img
-                      v-if="+machine.reg_value"
+                      v-if="+machine.status"
                       width="35"
                       src="@/assets/fanmotion.gif"
                     ></v-img>
@@ -391,7 +391,7 @@
                 class="view-mode"
               >
                 <button
-                  v-if="+machine.reg_value"
+                  v-if="+machine.status"
                   class="machine-action-button mr-2"
                   @click="turnOffMachine(machine.machine_id)"
                 >
