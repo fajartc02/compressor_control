@@ -58,8 +58,8 @@ export default {
     },
   },
   actions: {
-    FETCH_PLANT(context) {
-      API()
+    async FETCH_PLANT(context) {
+      await API()
         .get("/master/plants/view")
         .then((res) => {
           context.commit("setPlantsData", res.data.data);
@@ -68,8 +68,8 @@ export default {
           console.log(e);
         });
     },
-    GET_PLANT_BY_ID(context, payload) {
-      API()
+    async GET_PLANT_BY_ID(context, payload) {
+      await API()
         .get(`/master/plants/view?id=${payload}`)
         .then((res) => {
           context.commit("setPlantData", res.data.data[0]);
@@ -78,8 +78,8 @@ export default {
           console.log(e);
         });
     },
-    GET_PLANT_DATA(context, payload) {
-      API()
+    async GET_PLANT_DATA(context, payload) {
+      await API()
         .get(`/master/plants/plantData?plant_id=${payload}`)
         .then((res) => {
           context.commit("setPlantDetailData", res.data);
@@ -88,8 +88,8 @@ export default {
           console.log(e);
         });
     },
-    ADD_PLANT(context, payload) {
-      API()
+    async ADD_PLANT(context, payload) {
+      await API()
         .post("/master/plants/add", payload)
         .then((res) => {
           if (res.data.message == "success add plant") {
@@ -104,8 +104,8 @@ export default {
           console.log(e);
         });
     },
-    DELETE_PLANT(context, payload) {
-      API()
+    async DELETE_PLANT(context, payload) {
+      await API()
         .delete(`/master/plants/delete/${payload}`)
         .then((res) => {
           if (res.data.message == "success delete plant") {
@@ -122,8 +122,8 @@ export default {
     },
 
     // LINES ACTION
-    ADD_LINE(context, payload) {
-      API()
+    async ADD_LINE(context, payload) {
+      await API()
         .post("/master/lines/add", payload)
         .then((res) => {
           if (res.data.message == "success add line") {
@@ -137,8 +137,8 @@ export default {
           console.log(e);
         });
     },
-    DELETE_LINE(context, payload) {
-      API()
+    async DELETE_LINE(context, payload) {
+      await API()
         .delete(`/master/lines/delete/${payload}`)
         .then((res) => {
           if (res.data.message == "success delete line") {
@@ -154,8 +154,8 @@ export default {
     },
 
     // MACHINES ACTION
-    GET_MACHINES(context, { plant_id }) {
-      API()
+    async GET_MACHINES(context, { plant_id }) {
+      await API()
         .get(`/master/machines/view?plant_id=${plant_id}`)
         .then((res) => {
           context.commit("setMachinesData", res.data.data);
@@ -165,8 +165,8 @@ export default {
           console.log(e);
         });
     },
-    ADD_MACHINE(context, payload) {
-      API()
+    async ADD_MACHINE(context, payload) {
+      await API()
         .post("/master/machines/add", payload)
         .then((res) => {
           if (res.data.message == "success add machine") {
@@ -180,8 +180,8 @@ export default {
           console.log(e);
         });
     },
-    EDIT_MACHINE(context, { data, id }) {
-      API()
+    async EDIT_MACHINE(context, { data, id }) {
+      await API()
         .put(`/master/machines/edit/${id}`, data)
         .then((res) => {
           if (res.data.message == "success update machine") {
@@ -195,8 +195,8 @@ export default {
           console.log(e);
         });
     },
-    DELETE_MACHINE(context, { id }) {
-      API()
+    async DELETE_MACHINE(context, { id }) {
+      await API()
         .delete(`/master/machines/delete/${id}`)
         .then((res) => {
           if (res.data.message == "success delete machine") {
@@ -210,8 +210,8 @@ export default {
           console.log(e);
         });
     },
-    TURN_ON_MACHINE(context, { machine_id }) {
-      API()
+    async TURN_ON_MACHINE(context, { machine_id }) {
+      await API()
         .post(`/iot/compressor/on/${machine_id}`)
         .then((res) => {
           toast.success(res.data.message, {
@@ -223,8 +223,8 @@ export default {
           console.log(e);
         });
     },
-    TURN_OFF_MACHINE(context, { machine_id }) {
-      API()
+    async TURN_OFF_MACHINE(context, { machine_id }) {
+      await API()
         .post(`/iot/compressor/off/${machine_id}`)
         .then((res) => {
           toast.success(res.data.message, {
@@ -238,8 +238,8 @@ export default {
     },
 
     // MACHINE PARAMS
-    GET_PARAMS(context, payload) {
-      API()
+    async GET_PARAMS(context, payload) {
+      await API()
         .get(`/master/parameters/view`)
         .then((res) => {
           context.commit("setParamsData", res.data.data);

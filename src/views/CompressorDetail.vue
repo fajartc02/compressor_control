@@ -478,7 +478,7 @@ export default {
         console.log("Error get parameters data");
       }
     },
-    createLine() {
+    async createLine() {
       if (!this.line_name && !this.line_sname) {
         toast.error("Please fill all the required fields");
       } else {
@@ -488,20 +488,30 @@ export default {
           line_snm: this.line_sname,
         };
 
-        this.$store.dispatch("ADD_LINE", data);
-        this.getPlantById();
-        this.addLineDialog = false;
-        this.line_name = "";
-        this.line_sname = "";
+        try {
+          await this.$store.dispatch("ADD_LINE", data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.getPlantById();
+          this.addLineDialog = false;
+          this.line_name = "";
+          this.line_sname = "";
+        }
       }
     },
     deleteLine(id) {
       toast("Are you sure to delete this line?", {
         action: {
           label: "Sure",
-          onClick: () => {
-            this.$store.dispatch("DELETE_LINE", id);
-            this.getPlantById();
+          onClick: async () => {
+            try {
+              await this.$store.dispatch("DELETE_LINE", id);
+            } catch (error) {
+              console.error(error);
+            } finally {
+              this.getPlantById();
+            }
           },
         },
       });
@@ -515,12 +525,6 @@ export default {
       this.mapParamsDataToSelectOptionValue();
     },
     setMachinePosition() {
-      // tempMachine: {
-      //   machine_nm: "",
-      //   y_axis: 0,
-      //   x_axis: 0,
-      // },
-
       this.isMachineReadyToSetThePosition = true;
       this.addMachineDialog = false;
     },
@@ -533,16 +537,18 @@ export default {
         param_ids: this.paramsValue,
       };
 
-      this.$store.dispatch("ADD_MACHINE", data);
-
-      setTimeout(() => {
+      try {
+        await this.$store.dispatch("ADD_MACHINE", data);
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.getMachines();
         this.getPlantById();
         this.addMachineDialog = false;
         this.isMachineReadyToSetThePosition = false;
-      }, 1000);
+      }
     },
-    editMachine() {
+    async editMachine() {
       const data = {
         line_id: this.selectedLineID,
         // machine_nm: this.machine.machine_nm,
@@ -551,41 +557,59 @@ export default {
         // param_ids: this.paramsValue,
       };
 
-      this.$store.dispatch("EDIT_MACHINE", {
-        id: this.selectedEditableMachine,
-        data: data,
-      });
-      this.getPlantById();
-      this.getMachines();
-      this.selectedEditableMachine = null;
+      try {
+        await this.$store.dispatch("EDIT_MACHINE", {
+          id: this.selectedEditableMachine,
+          data: data,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.getPlantById();
+        this.getMachines();
+        this.selectedEditableMachine = null;
+      }
     },
     deleteMachine(id) {
       toast("Are you sure to delete this machine?", {
         action: {
           label: "Sure",
-          onClick: () => {
-            this.$store.dispatch("DELETE_MACHINE", { id: id });
-            setTimeout(() => {
+          onClick: async () => {
+            try {
+              await this.$store.dispatch("DELETE_MACHINE", { id: id });
+            } catch (error) {
+              console.log(error);
+            } finally {
               this.getMachines();
               this.getPlantById();
-            }, 1000);
+            }
           },
         },
       });
     },
-    turnOnMachine(machine_id) {
-      this.$store.dispatch("TURN_ON_MACHINE", { machine_id: machine_id });
-      setTimeout(() => {
+    async turnOnMachine(machine_id) {
+      try {
+        await this.$store.dispatch("TURN_ON_MACHINE", {
+          machine_id: machine_id,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.getMachines();
         this.getPlantById();
-      }, 1000);
+      }
     },
-    turnOffMachine(machine_id) {
-      this.$store.dispatch("TURN_OFF_MACHINE", { machine_id: machine_id });
-      setTimeout(() => {
+    async turnOffMachine(machine_id) {
+      try {
+        await this.$store.dispatch("TURN_OFF_MACHINE", {
+          machine_id: machine_id,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.getMachines();
         this.getPlantById();
-      }, 1000);
+      }
     },
 
     async mapParamsDataToSelectOptionValue() {
