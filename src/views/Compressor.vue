@@ -160,25 +160,31 @@ export default {
     uploadFile() {
       this.plant_image = this.$refs.file.files[0];
     },
-    createPlant() {
+    async createPlant() {
       if (!this.plant_name && !this.plant_image) {
         toast.error("Please fill all the required fields");
       } else {
-        const formData = new FormData();
-        formData.append("company_id", "3377fee7-53c0-4e48-876e-6071ed1352bb");
-        formData.append("plant_nm", this.plant_name);
-        formData.append("background", this.plant_image);
+        try {
+          const formData = new FormData();
+          formData.append("company_id", "3377fee7-53c0-4e48-876e-6071ed1352bb");
+          formData.append("plant_nm", this.plant_name);
+          formData.append("background", this.plant_image);
 
-        this.$store.dispatch("ADD_PLANT", formData);
-        this.addPlantDialog = false;
-        this.plant_name = "";
+          await this.$store.dispatch("ADD_PLANT", formData);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.addPlantDialog = false;
+          this.plant_name = "";
+        }
       }
     },
     deletePlant(plantId) {
       toast("Are you sure to delete this plant?", {
         action: {
           label: "Sure",
-          onClick: () => this.$store.dispatch("DELETE_PLANT", plantId),
+          onClick: async () =>
+            await this.$store.dispatch("DELETE_PLANT", plantId),
         },
       });
     },

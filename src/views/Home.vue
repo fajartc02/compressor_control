@@ -134,11 +134,11 @@ export default {
     };
   },
   methods: {
-    getPlantById() {
-      this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
+    async getPlantById() {
+      await this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
     },
-    getMachines(plant_id) {
-      this.$store.dispatch("GET_MACHINES", { plant_id: plant_id });
+    async getMachines(plant_id) {
+      await this.$store.dispatch("GET_MACHINES", { plant_id: plant_id });
     },
     initPlantData() {
       this.selectedPlantId = this.plants[this.plantIndexPosition].uuid; // set initial default plant id
@@ -147,6 +147,7 @@ export default {
       if (type == "prev") {
         this.plantIndexPosition = this.plantIndexPosition - 1;
         const plant_id = this.plants[this.plantIndexPosition].uuid;
+        this.selectedPlantId = plant_id;
 
         this.getMachines(plant_id);
       }
@@ -159,28 +160,43 @@ export default {
         } else {
           plant_id = this.plants[this.plantIndexPosition].uuid;
         }
+        this.selectedPlantId = plant_id;
 
         this.getMachines(plant_id);
       }
     },
-    turnOnMachine(machine_id) {
-      this.$store.dispatch("TURN_ON_MACHINE", { machine_id: machine_id });
-      setTimeout(() => {
+    async turnOnMachine(machine_id) {
+      try {
+        await this.$store.dispatch("TURN_ON_MACHINE", {
+          machine_id: machine_id,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.getMachines(this.selectedPlantId);
-      }, 1000);
+      }
     },
-    turnOffMachine(machine_id) {
-      this.$store.dispatch("TURN_OFF_MACHINE", { machine_id: machine_id });
-      setTimeout(() => {
+    async turnOffMachine(machine_id) {
+      try {
+        await this.$store.dispatch("TURN_OFF_MACHINE", {
+          machine_id: machine_id,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.getMachines(this.selectedPlantId);
-      }, 1000);
+      }
     },
   },
-  mounted() {
-    this.$store.dispatch("FETCH_PLANT"); // get the plant data
-    setTimeout(() => {
+  async mounted() {
+    try {
+      await this.$store.dispatch("FETCH_PLANT"); // get the plant data
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
       this.getMachines(this.plants[0].uuid); // get machines data
-    }, 1000);
+    }
   },
   computed: {
     ...mapGetters(["plant", "plants", "machines"]),

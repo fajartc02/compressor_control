@@ -467,15 +467,16 @@ export default {
       this.moveable.top = newRect.top;
       this.moveable.left = newRect.left;
     },
-    getPlantById() {
-      this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
+    async getPlantById() {
+      await this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
     },
-    getParams() {
-      const res = this.$store.dispatch("GET_PARAMS");
-      if (res) {
+    async getParams() {
+      try {
+        await this.$store.dispatch("GET_PARAMS");
+      } catch (error) {
+        console.log(error);
+      } finally {
         this.mapParamsDataToSelectOptionValue();
-      } else {
-        console.log("Error get parameters data");
       }
     },
     async createLine() {
@@ -517,7 +518,9 @@ export default {
       });
     },
     getMachines() {
-      this.$store.dispatch("GET_MACHINES", { plant_id: this.$route.params.id });
+      this.$store.dispatch("GET_MACHINES", {
+        plant_id: this.$route.params.id,
+      });
     },
     addMachine(id) {
       this.addMachineDialog = true;
@@ -546,6 +549,8 @@ export default {
         this.getPlantById();
         this.addMachineDialog = false;
         this.isMachineReadyToSetThePosition = false;
+        this.machine.machine_nm = null;
+        this.paramsValue = null;
       }
     },
     async editMachine() {
@@ -698,23 +703,6 @@ export default {
   --dot-color: white;
   --dot-size: 1px;
   --dot-space: 22px;
-  /* background: linear-gradient(
-        90deg,
-        var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-        transparent 1%
-      )
-      center / var(--dot-space) var(--dot-space),
-    linear-gradient(
-        var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-        transparent 1%
-      )
-      center / var(--dot-space) var(--dot-space),
-    var(--dot-color); */
-  /* background-image: url("../assets/machine-map.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover; */
-  /* background-attachment: fixed; */
 }
 .main-area > img {
   position: relative;
@@ -823,5 +811,37 @@ export default {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   border: 1px solid #e5e7eb;
   border-radius: 6px;
+}
+
+/* form */
+.form-label {
+  color: #6b7280;
+  margin-bottom: 6px !important;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+}
+.form-input {
+  background-color: #f9fafb;
+  color: #111827;
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1.8px solid #d1d5db;
+  outline: none;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  border: 1.8px solid #9ca3af;
+}
+
+::placeholder {
+  color: #9ca3af;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder {
+  /* Edge 12 -18 */
+  color: #9ca3af;
 }
 </style>
