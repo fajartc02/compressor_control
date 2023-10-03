@@ -68,16 +68,6 @@ export default {
           console.log(e);
         });
     },
-    GET_PLANT_BACKGROUND(context, { path }) {
-      API()
-        .get(`/image?path=${path}`)
-        .then((res) => {
-          context.commit("setBackgroundImage", res);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
     GET_PLANT_BY_ID(context, payload) {
       API()
         .get(`/master/plants/view?id=${payload}`)
@@ -164,12 +154,11 @@ export default {
     },
 
     // MACHINES ACTION
-    async GET_MACHINES(context) {
-      await API()
-        .get("/master/machines/view")
+    GET_MACHINES(context, { plant_id }) {
+      API()
+        .get(`/master/machines/view?plant_id=${plant_id}`)
         .then((res) => {
           context.commit("setMachinesData", res.data.data);
-          context.commit("setApiResponse", "success");
         })
         .catch((e) => {
           toast.error("Error");
@@ -184,7 +173,6 @@ export default {
             toast.success("Machine created", {
               duration: 800,
             });
-            context.commit("setApiResponse", "success");
           }
         })
         .catch((e) => {
@@ -226,11 +214,9 @@ export default {
       API()
         .post(`/iot/compressor/on/${machine_id}`)
         .then((res) => {
-          if (res.data.message == "Success to turn ON compressor") {
-            toast.success("Machine turned on", {
-              duration: 800,
-            });
-          }
+          toast.success(res.data.message, {
+            duration: 800,
+          });
         })
         .catch((e) => {
           toast.error("Error");
@@ -241,11 +227,9 @@ export default {
       API()
         .post(`/iot/compressor/off/${machine_id}`)
         .then((res) => {
-          if (res.data.message == "Success to turn OFF compressor") {
-            toast.success("Machine turned off", {
-              duration: 800,
-            });
-          }
+          toast.success(res.data.message, {
+            duration: 800,
+          });
         })
         .catch((e) => {
           toast.error("Error");

@@ -156,7 +156,6 @@
 <script>
 import { mapGetters } from "vuex";
 import { toast } from "vue-sonner";
-import router from "@/router";
 
 export default {
   name: "CompressorView",

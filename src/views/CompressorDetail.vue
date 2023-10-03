@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 20px">
-    <main class="main-area" :style="{ 'background-image': 'url(' + +')' }">
+    <main class="main-area">
       <div class="main-area-aside d-flex align-start">
         <div class="sidebar-wrapper">
           <div
@@ -131,8 +131,8 @@
       </div>
 
       <img
-        v-if="this.background"
-        :src="`http://localhost:7000/api/v1/image?path=${plant.background}`"
+        v-if="plant"
+        :src="`${baseUrl}/image?path=${plant.background}`"
         alt=""
       />
     </main>
@@ -428,6 +428,7 @@ export default {
   },
   data() {
     return {
+      baseUrl: import.meta.env.VITE_API_URL,
       moveable: {
         width: 0,
         height: 0,
@@ -469,13 +470,6 @@ export default {
     getPlantById() {
       this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
     },
-    getPlantBackgroundImage() {
-      setTimeout(() => {
-        this.$store.dispatch("GET_PLANT_BACKGROUND", {
-          path: this.plant.background,
-        });
-      }, 1500);
-    },
     getParams() {
       const res = this.$store.dispatch("GET_PARAMS");
       if (res) {
@@ -513,7 +507,7 @@ export default {
       });
     },
     getMachines() {
-      this.$store.dispatch("GET_MACHINES");
+      this.$store.dispatch("GET_MACHINES", { plant_id: this.$route.params.id });
     },
     addMachine(id) {
       this.addMachineDialog = true;
@@ -619,13 +613,9 @@ export default {
     this.getPlantById();
     this.getParams();
     this.getMachines();
-    this.getPlantBackgroundImage();
-    // setTimeout(() => {
-    //   console.log(this.background.data);
-    // }, 1000);
   },
   computed: {
-    ...mapGetters(["plant", "parameters", "machines", "background"]),
+    ...mapGetters(["plant", "parameters", "machines"]),
   },
 };
 </script>
@@ -696,10 +686,10 @@ export default {
       )
       center / var(--dot-space) var(--dot-space),
     var(--dot-color); */
-  background-image: url("../assets/machine-map.png");
+  /* background-image: url("../assets/machine-map.png");
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: cover; */
   /* background-attachment: fixed; */
 }
 .main-area > img {
