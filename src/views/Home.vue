@@ -14,22 +14,23 @@
                 Use navigation to select plant
               </span>
             </div>
-            <div>
+            <div v-if="plants.length >= 1">
               <button
                 :disabled="plantIndexPosition == 0"
-                class="button-icon mr-2"
-                @click="
-                  setPlantIndexPosition('prev', plants[plantIndexPosition].uuid)
-                "
+                :class="`button-icon mr-2 ${
+                  plantIndexPosition == 0 ? 'disabled' : ''
+                }`"
+                @click="setPlantIndexPosition('prev')"
               >
                 <v-icon>mdi-arrow-left-thin</v-icon>
               </button>
               <button
                 :disabled="plantIndexPosition == plants.length - 1"
+                :class="`button-icon mr-2 ${
+                  plantIndexPosition == plants.length - 1 ? 'disabled' : ''
+                }`"
                 class="button-icon mr-2"
-                @click="
-                  setPlantIndexPosition('next', plants[plantIndexPosition].uuid)
-                "
+                @click="setPlantIndexPosition('next')"
               >
                 <v-icon>mdi-arrow-right-thin</v-icon>
               </button>
@@ -58,8 +59,6 @@
         :h="55"
         :x="machine.x_axis"
         :y="machine.y_axis"
-        v-on:resizing="resize"
-        v-on:dragging="resize"
       >
         <div
           class="machine-card-list"
@@ -119,14 +118,11 @@
       
   <script>
 import { mapGetters } from "vuex";
-import { toast } from "vue-sonner";
-import Multiselect from "@vueform/multiselect";
 import VueDragResize from "vue3-drag-resize";
 
 export default {
   name: "Home",
   components: {
-    Multiselect,
     VueDragResize,
   },
   data() {
@@ -134,44 +130,10 @@ export default {
       baseUrl: import.meta.env.VITE_API_URL,
       plantIndexPosition: 0,
       selectedPlantId: null,
-      moveable: {
-        width: 0,
-        height: 0,
-        top: 0,
-        left: 0,
-      },
-      plantBackground: null,
-      selectedEditableMachine: null,
-      is_run: false,
       machineStatus: true,
-      showSidebar: true,
-      addLineDialog: false,
-      addMachineDialog: false,
-      selectedLineID: null,
-      line_name: "",
-      line_sname: "",
-      machine: {
-        machine_nm: "",
-        y_axis: 0,
-        x_axis: 0,
-      },
-      tempMachine: {
-        machine_nm: "",
-        y_axis: 0,
-        x_axis: 0,
-      },
-      isMachineReadyToSetThePosition: false,
-      paramsValue: null,
-      options: null,
     };
   },
   methods: {
-    resize(newRect) {
-      this.moveable.width = newRect.width;
-      this.moveable.height = newRect.height;
-      this.moveable.top = newRect.top;
-      this.moveable.left = newRect.left;
-    },
     getPlantById() {
       this.$store.dispatch("GET_PLANT_BY_ID", this.$route.params.id);
     },
@@ -180,16 +142,24 @@ export default {
     },
     initPlantData() {
       this.selectedPlantId = this.plants[this.plantIndexPosition].uuid; // set initial default plant id
-      this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data with first plant
     },
-    setPlantIndexPosition(type, plant_id) {
-      this.selectedPlantId = plant_id;
+    setPlantIndexPosition(type) {
       if (type == "prev") {
         this.plantIndexPosition = this.plantIndexPosition - 1;
+        const plant_id = this.plants[this.plantIndexPosition].uuid;
+
         this.getMachines(plant_id);
       }
       if (type == "next") {
+        var plant_id;
+
         this.plantIndexPosition = this.plantIndexPosition + 1;
+        if (this.plantIndexPosition == 0) {
+          plant_id = this.plants[1].uuid;
+        } else {
+          plant_id = this.plants[this.plantIndexPosition].uuid;
+        }
+
         this.getMachines(plant_id);
       }
     },
@@ -206,16 +176,11 @@ export default {
       }, 1000);
     },
   },
-  watch: {
-    plants(oldValue, newValue) {
-      this.initPlantData();
-    },
-    plantIndexPosition() {
-      this.initPlantData();
-    },
-  },
   mounted() {
-    this.$store.dispatch("FETCH_PLANT");
+    this.$store.dispatch("FETCH_PLANT"); // get the plant data
+    setTimeout(() => {
+      this.getMachines(this.plants[0].uuid); // get machines data
+    }, 1000);
   },
   computed: {
     ...mapGetters(["plant", "plants", "machines"]),
@@ -226,6 +191,9 @@ export default {
 
 <style src="@vueform/multiselect/themes/default.css"></style>    
   <style scoped>
+.disabled {
+  background-color: #f3f4f6 !important;
+}
 .plant-name {
   font-size: 18px;
   text-align: left;
@@ -277,23 +245,6 @@ export default {
   --dot-color: white;
   --dot-size: 1px;
   --dot-space: 22px;
-  /* background: linear-gradient(
-        90deg,
-        var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-        transparent 1%
-      )
-      center / var(--dot-space) var(--dot-space),
-    linear-gradient(
-        var(--dot-bg) calc(var(--dot-space) - var(--dot-size)),
-        transparent 1%
-      )
-      center / var(--dot-space) var(--dot-space),
-    var(--dot-color); */
-  /* background-image: url("../assets/machine-map.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover; */
-  /* background-attachment: fixed; */
 }
 .main-area > img {
   position: relative;

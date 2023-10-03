@@ -49,24 +49,13 @@
             :key="plant.uuid"
           >
             <v-card-item>
-              <v-card-title class="text-body-2 d-flex align-center">
-                <v-chip
-                  class="text-medium-emphasis"
-                  color="grey-darken-4"
-                  prepend-icon="mdi-washing-machine"
-                  size="small"
-                  text="2"
-                  variant="flat"
-                ></v-chip>
-              </v-card-title>
-
               <div class="py-2">
                 <div class="text-h6">
                   {{ plant.plant_nm }}
                 </div>
 
                 <div class="font-weight-light text-medium-emphasis">
-                  Join the Vuetify team for a live Question and Answer session.
+                  Join team for a live Question and Answer session.
                 </div>
               </div>
             </v-card-item>
