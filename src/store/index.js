@@ -1,13 +1,13 @@
 import { createStore } from "vuex";
 
-import plantModule from "./plant.module";
+import mainModule from "./main.module";
 import authModule from "./auth.module";
 import userModule from "./user.module";
 
 export default createStore({
-    modules: {
-        plant: plantModule,
-        auth: authModule,
-        user: userModule
-    },
+  modules: {
+    main: mainModule,
+    auth: authModule,
+    user: userModule,
+  },
 });

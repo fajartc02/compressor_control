@@ -220,7 +220,7 @@
           ></v-btn>
         </v-sheet>
 
-        <div class="w-full mt-5 mb-10 mx-5">
+        <div class="w-full mt-5 mx-5" style="padding-bottom: 150px">
           <div>
             <p class="form-label">Machine name</p>
             <input
@@ -230,7 +230,6 @@
             />
           </div>
 
-          <!-- <Multiselect v-model="value" :options="options" /> -->
           <div class="mt-3">
             <p class="form-label">Select parameters</p>
             <Multiselect
@@ -239,7 +238,17 @@
               :close-on-select="false"
               :searchable="true"
               :options="options"
+              class="multiselect"
             />
+            <v-btn
+              class="text-none text-subtitle-2 rounded px-1 mt-2"
+              color="#f3f4f6"
+              variant="flat"
+              size="sm"
+              @click="showAddParamForm = true"
+            >
+              Can't find parameter
+            </v-btn>
           </div>
         </div>
 
@@ -263,6 +272,100 @@
               color="#f3f4f6"
               variant="flat"
               @click="addMachineDialog = false"
+            >
+              Cancel
+            </v-btn>
+          </div>
+        </v-sheet>
+      </v-card>
+    </v-dialog>
+
+    <!-- add machine parameter dialog -->
+    <v-dialog persistent v-model="showAddParamForm" width="auto">
+      <v-card
+        class="mx-auto rounded-lg"
+        color="#fff"
+        min-width="500"
+        variant="flat"
+      >
+        <v-sheet
+          color="#f5f5f5"
+          class="py-1 px-5 d-flex justify-space-between align-center"
+        >
+          <div>
+            <h3>Create parameters</h3>
+          </div>
+          <v-btn
+            @click="showAddParamForm = false"
+            icon="mdi-close"
+            variant="text"
+          ></v-btn>
+        </v-sheet>
+
+        <div class="w-full my-5 mx-5">
+          <div v-if="showAddParamForm" class="mt-5">
+            <v-row>
+              <v-col>
+                <p class="form-label">Device name</p>
+                <input
+                  type="text"
+                  v-model="parametersData.dev_nm"
+                  class="form-input"
+                />
+              </v-col>
+              <v-col>
+                <p class="form-label">Group name</p>
+                <input
+                  type="text"
+                  v-model="parametersData.group_nm"
+                  class="form-input"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <p class="form-label">Tag name</p>
+                <input
+                  type="text"
+                  v-model="parametersData.tag_nm"
+                  class="form-input"
+                />
+              </v-col>
+              <v-col>
+                <p class="form-label">Is main</p>
+                <v-switch
+                  color="primary"
+                  true-value="1"
+                  false-value="0"
+                  v-model="parametersData.is_main"
+                  hide-details
+                  inset
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+
+        <v-sheet
+          class="py-3 px-5 d-flex justify-space-between align-center"
+          style="border-top: 1px solid #f3f4f6"
+        >
+          <div></div>
+          <div>
+            <v-btn
+              class="text-none text-subtitle-1 rounded-lg float-right"
+              color="#5865f2"
+              variant="flat"
+              @click="addParameter"
+              :loading="isLoading"
+            >
+              Create parameter
+            </v-btn>
+            <v-btn
+              class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
+              color="#f3f4f6"
+              variant="flat"
+              @click="showAddParamForm = false"
             >
               Cancel
             </v-btn>
@@ -456,8 +559,15 @@ export default {
         x_axis: 0,
       },
       isMachineReadyToSetThePosition: false,
+      showAddParamForm: false,
       paramsValue: null,
       options: null,
+      parametersData: {
+        is_main: 0,
+        tag_nm: "",
+        group_nm: "",
+        dev_nm: "",
+      },
     };
   },
   methods: {
@@ -517,8 +627,8 @@ export default {
         },
       });
     },
-    getMachines() {
-      this.$store.dispatch("GET_MACHINES", {
+    async getMachines() {
+      await this.$store.dispatch("GET_MACHINES", {
         plant_id: this.$route.params.id,
       });
     },
@@ -575,6 +685,31 @@ export default {
         this.selectedEditableMachine = null;
       }
     },
+    async addParameter() {
+      const data = {
+        dev_name: this.parametersData.dev_nm,
+        group_name: this.parametersData.group_nm,
+        tag_name: this.parametersData.tag_nm,
+        is_main: +this.parametersData.is_main,
+      };
+      if (data.dev_name == "" || data.group_name == "" || data.tag_name == "") {
+        toast.error("All fields are required");
+      } else {
+        try {
+          await this.$store.dispatch("ADD_PARAM", { param_data: data });
+        } catch (error) {
+          console.log(error);
+        } finally {
+          this.showAddParamForm = false;
+          this.parametersData.dev_nm = "";
+          this.parametersData.group_nm = "";
+          this.parametersData.tag_nm = "";
+          this.parametersData.is_main = 0;
+          await this.getParams();
+          this.mapParamsDataToSelectOptionValue();
+        }
+      }
+    },
     deleteMachine(id) {
       toast("Are you sure to delete this machine?", {
         action: {
@@ -616,32 +751,26 @@ export default {
         this.getPlantById();
       }
     },
-
-    async mapParamsDataToSelectOptionValue() {
+    mapParamsDataToSelectOptionValue() {
       var tempOptions = [];
-      await this.parameters.map((i) => {
+      this.parameters.map((i) => {
         var opt = { value: i.client_hdl, label: i.dev_name };
         tempOptions.push(opt);
       });
 
       this.options = tempOptions;
     },
-    handleCreateParams: async (option, select$) => {
-      // Async request (eg. for validating)
-      // await new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve();
-      //   }, 1000);
-      // });
-      // Modifying option label
-      // option.label = option.label + " - confirmed";
-      // return option;
-    },
   },
-  mounted() {
-    this.getPlantById();
-    this.getParams();
-    this.getMachines();
+  async mounted() {
+    try {
+      await this.getPlantById();
+      await this.getParams();
+      await this.getMachines();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.mapParamsDataToSelectOptionValue();
+    }
   },
   computed: {
     ...mapGetters(["plant", "parameters", "machines"]),
@@ -843,5 +972,28 @@ export default {
 ::-ms-input-placeholder {
   /* Edge 12 -18 */
   color: #9ca3af;
+}
+
+.multiselect {
+  --ms-tag-bg: #dbeafe;
+  --ms-tag-color: #2563eb;
+  --ms-dropdown-bg: #ffffff;
+
+  --ms-option-font-size: 1rem;
+  --ms-option-line-height: 1.375;
+  --ms-option-bg-pointed: #fafafb;
+  --ms-option-color-pointed: #1f2937;
+  --ms-option-bg-selected: #10b981;
+  --ms-option-color-selected: #ffffff;
+  --ms-option-bg-disabled: #ffffff;
+  --ms-option-color-disabled: #d1d5db;
+  --ms-option-bg-selected-pointed: #26c08e;
+  --ms-option-color-selected-pointed: #ffffff;
+  --ms-option-bg-selected-disabled: #ffffff;
+  --ms-option-color-selected-disabled: #d1fae5;
+  --ms-option-py: 0.5rem;
+  --ms-option-px: 0.75rem;
+
+  --ms-empty-color: #4b5563;
 }
 </style>

@@ -250,5 +250,20 @@ export default {
           return false;
         });
     },
+    async ADD_PARAM(context, { param_data }) {
+      await API()
+        .post("/master/parameters/add", param_data)
+        .then((res) => {
+          if (res.data.message == "success add parameter") {
+            toast.success("Parameter created", {
+              duration: 800,
+            });
+          }
+        })
+        .catch((e) => {
+          toast.error("Error");
+          console.log(e);
+        });
+    },
   },
 };
