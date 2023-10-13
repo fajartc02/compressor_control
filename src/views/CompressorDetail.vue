@@ -735,8 +735,10 @@ export default {
       } catch (error) {
         console.log(error);
       } finally {
-        this.getMachines();
-        this.getPlantById();
+        setTimeout(() => {
+          this.getMachines();
+          this.getPlantById();
+        }, 2000)
       }
     },
     async turnOffMachine(machine_id) {
@@ -747,8 +749,10 @@ export default {
       } catch (error) {
         console.log(error);
       } finally {
-        this.getMachines();
-        this.getPlantById();
+        setTimeout(() => {
+          this.getMachines();
+          this.getPlantById();
+        }, 2000)
       }
     },
     mapParamsDataToSelectOptionValue() {
