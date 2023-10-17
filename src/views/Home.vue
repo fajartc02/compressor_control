@@ -140,9 +140,6 @@ export default {
     async getMachines(plant_id) {
       await this.$store.dispatch("GET_MACHINES", { plant_id: plant_id });
     },
-    initPlantData() {
-      this.selectedPlantId = this.plants[this.plantIndexPosition].uuid; // set initial default plant id
-    },
     setPlantIndexPosition(type) {
       if (type == "prev") {
         this.plantIndexPosition = this.plantIndexPosition - 1;
@@ -175,7 +172,7 @@ export default {
       } finally {
         setTimeout(() => {
           this.getMachines(this.selectedPlantId);
-        }, 2000)
+        }, 2000);
       }
     },
     async turnOffMachine(machine_id) {
@@ -188,7 +185,7 @@ export default {
       } finally {
         setTimeout(() => {
           this.getMachines(this.selectedPlantId);
-        }, 2000)
+        }, 2000);
       }
     },
   },
@@ -199,16 +196,11 @@ export default {
       console.log(error);
     } finally {
       this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
-      this.getMachines(this.plants[0].uuid); // get machines data
+
+      setInterval(async () => {
+        await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
+      }, 3000);
     }
-    setInterval(async () => {
-      try {
-        this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
-        this.getMachines(this.plants[0].uuid); // get machines data
-      } catch (error) {
-        console.log(error);
-      }
-    }, 3000)
   },
   computed: {
     ...mapGetters(["plant", "plants", "machines"]),
