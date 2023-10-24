@@ -1,42 +1,76 @@
 <template>
-  <div class="navbar d-flex justify-space-between">
-    <div class="d-flex align-center">
-      <v-app-bar-nav-icon @click="isOpen = !isOpen"></v-app-bar-nav-icon>
-      <span class="nav-title ml-1">Compressor monitoring system</span>
-    </div>
-    <div>
-      <v-btn icon class="mr-3" style="box-shadow: none">
+  <div>
+    <v-app-bar class="navbar" style="box-shadow: none">
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <h3 class="ml-2">Compressor Control System</h3>
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
         <v-icon>mdi-account-badge</v-icon>
       </v-btn>
-    </div>
+    </v-app-bar>
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+      class="bg-blue-darken-4"
+      theme="dark"
+    >
+      <template v-slot:prepend>
+        <v-list-item
+          lines="two"
+          prepend-avatar="https://randomuser.me/api/portraits/men/1.jpg"
+          :title="isLoggedIn"
+          subtitle="Logged in"
+        ></v-list-item>
+      </template>
+      <v-divider></v-divider>
+      <v-list class="mt-2" v-model:opened="isOpen">
+        <router-link to="/" style="text-decoration: none">
+          <v-list-item
+            prepend-icon="mdi-home-variant"
+            title="Home"
+            class="menu-item"
+          ></v-list-item>
+        </router-link>
+        <router-link to="/compressor" style="text-decoration: none">
+          <v-list-item
+            prepend-icon="mdi-washing-machine"
+            title="Compressor"
+            class="menu-item"
+          ></v-list-item>
+        </router-link>
+        <v-list-group value="Master">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-file-document"
+              title="Master"
+              class="menu-item"
+            ></v-list-item>
+          </template>
+          <router-link
+            v-for="(menu, i) in masterMenu"
+            :key="i"
+            :to="menu.path"
+            style="text-decoration: none"
+          >
+            <v-list-item
+              class="text-white menu-item"
+              :title="menu.title"
+              :value="menu.title"
+            ></v-list-item>
+          </router-link>
+        </v-list-group>
+      </v-list>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block @click="logout"> Logout </v-btn>
+        </div>
+      </template>
+    </v-navigation-drawer>
   </div>
-
-  <!-- <v-navigation-drawer v-model="isOpen">
-    <v-list-item
-      prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
-      title="John Leider"
-    ></v-list-item>
-
-    <v-divider></v-divider>
-
-    <v-list density="compact" nav>
-      <router-link to="/" style="text-decoration: none">
-        <v-list-item
-          prepend-icon="mdi-view-dashboard"
-          title="Home"
-          value="home"
-        ></v-list-item>
-      </router-link>
-
-      <router-link to="/compressor" style="text-decoration: none">
-        <v-list-item
-          prepend-icon="mdi-forum"
-          title="Compressor"
-          value="compressor"
-        ></v-list-item>
-      </router-link>
-    </v-list>
-  </v-navigation-drawer> -->
 </template>
 
 <script>
@@ -44,8 +78,30 @@ export default {
   name: "AppBar",
   data() {
     return {
-      isOpen: false,
+      drawer: false,
+      showNavigation: true,
+      open: ["Master"],
+      masterMenu: [
+        {
+          path: "/master/users",
+          title: "Users",
+        },
+        {
+          path: "/master/parameters",
+          title: "Parameters",
+        },
+      ],
     };
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("LOGOUT");
+    },
+  },
+  computed: {
+    isLoggedIn: function () {
+      return localStorage.getItem("user");
+    },
   },
 };
 </script>
@@ -54,7 +110,7 @@ export default {
 .navbar {
   width: 100%;
   height: auto;
-  padding: 5px;
+  padding: 0px;
   background-color: #fff !important;
   border-bottom: 1px solid #eaeaea;
   z-index: 3;
@@ -62,6 +118,16 @@ export default {
 }
 .nav-title {
   font-weight: 600;
+}
+
+.menu-item {
+  color: #fff;
+  border-radius: 10px;
+  margin: 0px 10px;
+}
+.menu-item:hover {
+  color: #fff;
+  background-color: #000;
 }
 </style>
 

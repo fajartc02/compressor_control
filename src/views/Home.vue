@@ -1,117 +1,125 @@
 <template>
-  <div style="padding: 20px">
-    <main class="main-area">
-      <div class="main-area-aside d-flex align-start">
-        <div class="sidebar-wrapper">
-          <div
-            class="d-flex justify-space-between sidebar-wrapper-header align-top"
-          >
-            <div class="d-flex flex-column justify-start pl-1">
-              <h2 v-if="plants.length >= 1" class="plant-name">
-                <span> {{ plants[plantIndexPosition].plant_nm }} </span>
-              </h2>
-              <span class="plant-description" style="font-size: 13px">
-                Use navigation to select plant
-              </span>
-            </div>
-            <div v-if="plants.length >= 1">
-              <button
-                :disabled="plantIndexPosition == 0"
-                :class="`button-icon mr-2 ${
-                  plantIndexPosition == 0 ? 'disabled' : ''
-                }`"
-                @click="setPlantIndexPosition('prev')"
-              >
-                <v-icon>mdi-arrow-left-thin</v-icon>
-              </button>
-              <button
-                :disabled="plantIndexPosition == plants.length - 1"
-                :class="`button-icon mr-2 ${
-                  plantIndexPosition == plants.length - 1 ? 'disabled' : ''
-                }`"
-                class="button-icon mr-2"
-                @click="setPlantIndexPosition('next')"
-              >
-                <v-icon>mdi-arrow-right-thin</v-icon>
-              </button>
+  <div>
+    <AppBar />
+
+    <div style="padding: 20px">
+      <main class="main-area">
+        <div class="main-area-aside d-flex align-start">
+          <div class="sidebar-wrapper">
+            <div
+              class="d-flex justify-space-between sidebar-wrapper-header align-top"
+            >
+              <div class="d-flex flex-column justify-start pl-1">
+                <h2 v-if="plants.length >= 1" class="plant-name">
+                  <span> {{ plants[plantIndexPosition].plant_nm }} </span>
+                </h2>
+                <span class="plant-description" style="font-size: 13px">
+                  Use navigation to select plant
+                </span>
+              </div>
+              <div v-if="plants.length >= 1">
+                <button
+                  :disabled="plantIndexPosition == 0"
+                  :class="`button-icon mr-2 ${
+                    plantIndexPosition == 0 ? 'disabled' : ''
+                  }`"
+                  @click="setPlantIndexPosition('prev')"
+                >
+                  <v-icon>mdi-arrow-left-thin</v-icon>
+                </button>
+                <button
+                  :disabled="plantIndexPosition == plants.length - 1"
+                  :class="`button-icon mr-2 ${
+                    plantIndexPosition == plants.length - 1 ? 'disabled' : ''
+                  }`"
+                  class="button-icon mr-2"
+                  @click="setPlantIndexPosition('next')"
+                >
+                  <v-icon>mdi-arrow-right-thin</v-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <img
-        v-if="plants.length >= 1"
-        :src="`${baseUrl}/image?path=${plants[plantIndexPosition].background}`"
-        alt=""
-      />
-    </main>
+        <img
+          v-if="plants.length >= 1"
+          :src="`${baseUrl}/image?path=${plants[plantIndexPosition].background}`"
+          alt=""
+        />
+      </main>
 
-    <!-- map the machines -->
-    <div v-if="machines.length >= 1">
-      <VueDragResize
-        v-for="machine in machines"
-        :key="machine.machine_nm"
-        class="draggable"
-        :isActive="false"
-        :isResizable="false"
-        :isDraggable="selectedEditableMachine == machine.machine_id"
-        :w="300"
-        :h="55"
-        :x="machine.x_axis"
-        :y="machine.y_axis"
-      >
-        <div
-          class="machine-card-list"
-          :style="`${
-            +machine.status
-              ? 'border: 3px solid #10b981'
-              : 'border: 3px solid #ef4444'
-          }`"
+      <!-- map the machines -->
+      <div v-if="machines.length >= 1">
+        <VueDragResize
+          v-for="machine in machines"
+          :key="machine.machine_nm"
+          class="draggable"
+          :isActive="false"
+          :isResizable="false"
+          :isDraggable="selectedEditableMachine == machine.machine_id"
+          :w="300"
+          :h="55"
+          :x="machine.x_axis"
+          :y="machine.y_axis"
         >
-          <div class="d-flex justify-space-between align-center pa-1">
-            <div class="d-flex align-center">
-              <div class="machine-status mx-2">
-                <v-avatar color="transparent">
-                  <div>
-                    <v-img
-                      v-if="+machine.status"
-                      width="35"
-                      src="@/assets/fanmotion.gif"
-                    ></v-img>
-                    <v-img v-else width="35" src="@/assets/fanStop.png"></v-img>
-                  </div>
-                </v-avatar>
+          <div
+            class="machine-card-list"
+            :style="`${
+              +machine.status
+                ? 'border: 3px solid #10b981'
+                : 'border: 3px solid #ef4444'
+            }`"
+          >
+            <div class="d-flex justify-space-between align-center pa-1">
+              <div class="d-flex align-center">
+                <div class="machine-status mx-2">
+                  <v-avatar color="transparent">
+                    <div>
+                      <v-img
+                        v-if="+machine.status"
+                        width="35"
+                        src="@/assets/fanmotion.gif"
+                      ></v-img>
+                      <v-img
+                        v-else
+                        width="35"
+                        src="@/assets/fanStop.png"
+                      ></v-img>
+                    </div>
+                  </v-avatar>
+                </div>
+                <div class="machine-description mt-1">
+                  <h2>{{ machine.machine_nm }}</h2>
+                  <span>Line {{ machine.line_nm }}</span>
+                </div>
               </div>
-              <div class="machine-description mt-1">
-                <h2>{{ machine.machine_nm }}</h2>
-                <span>Line {{ machine.line_nm }}</span>
+              <div class="machine-action d-flex">
+                <div
+                  v-if="selectedEditableMachine != machine.machine_id"
+                  class="view-mode"
+                >
+                  <button
+                    v-if="+machine.status"
+                    class="machine-action-button mr-2"
+                    @click="turnOffMachine(machine.machine_id)"
+                  >
+                    <v-icon>mdi-stop</v-icon>
+                  </button>
+                  <button
+                    v-else
+                    class="machine-action-button mr-2"
+                    @click="turnOnMachine(machine.machine_id)"
+                  >
+                    <v-icon>mdi-play</v-icon>
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="machine-action d-flex">
-              <div
-                v-if="selectedEditableMachine != machine.machine_id"
-                class="view-mode"
-              >
-                <button
-                  v-if="+machine.status"
-                  class="machine-action-button mr-2"
-                  @click="turnOffMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-stop</v-icon>
-                </button>
-                <button
-                  v-else
-                  class="machine-action-button mr-2"
-                  @click="turnOnMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-play</v-icon>
-                </button>
-              </div>
-            </div>
+            <div class="mx-4"></div>
           </div>
-          <div class="mx-4"></div>
-        </div>
-      </VueDragResize>
+        </VueDragResize>
+      </div>
     </div>
   </div>
 </template>
@@ -119,11 +127,13 @@
   <script>
 import { mapGetters } from "vuex";
 import VueDragResize from "vue3-drag-resize";
+import AppBar from "@/layouts/AppBar.vue";
 
 export default {
   name: "Home",
   components: {
     VueDragResize,
+    AppBar,
   },
   data() {
     return {

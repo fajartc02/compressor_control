@@ -32,7 +32,11 @@ export default {
           }
         })
         .catch((e) => {
-          console.log(e);
+          if (e.response.data.message !== "success login") {
+            toast.error("Username / password salah");
+          } else {
+            toast.error("error");
+          }
         });
     },
     LOGOUT(context) {

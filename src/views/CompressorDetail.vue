@@ -1,518 +1,525 @@
 <template>
-  <div style="padding: 20px">
-    <main class="main-area">
-      <div class="main-area-aside d-flex align-start">
-        <div class="sidebar-wrapper">
-          <div
-            class="d-flex justify-space-between sidebar-wrapper-header align-top"
-          >
-            <div class="d-flex flex-column justify-start pl-1">
-              <h2 v-if="plant" class="plant-name">
-                <span> {{ plant.plant_nm }} </span>
-              </h2>
-              <span class="plant-description"> Manage your plant </span>
-            </div>
-            <div>
-              <router-link to="/compressor">
-                <button class="button-icon mr-2">
-                  <v-icon>mdi-arrow-left-thin</v-icon>
-                </button>
-              </router-link>
-              <button class="button-icon mr-2" @click="addLineDialog = true">
-                <v-icon>mdi-folder-plus</v-icon>
-              </button>
-            </div>
-          </div>
-
-          <div v-if="showSidebar">
+  <div>
+    <AppBar />
+    <div style="padding: 20px">
+      <main class="main-area">
+        <div class="main-area-aside d-flex align-start">
+          <div class="sidebar-wrapper">
             <div
-              v-if="plant"
-              style="max-height: 500px; overflow-y: scroll; margin-top: 10px"
+              class="d-flex justify-space-between sidebar-wrapper-header align-top"
             >
+              <div class="d-flex flex-column justify-start pl-1">
+                <h2 v-if="plant" class="plant-name">
+                  <span> {{ plant.plant_nm }} </span>
+                </h2>
+                <span class="plant-description"> Manage your plant </span>
+              </div>
+              <div>
+                <router-link to="/compressor">
+                  <button class="button-icon mr-2">
+                    <v-icon>mdi-arrow-left-thin</v-icon>
+                  </button>
+                </router-link>
+                <button class="button-icon mr-2" @click="addLineDialog = true">
+                  <v-icon>mdi-folder-plus</v-icon>
+                </button>
+              </div>
+            </div>
+
+            <div v-if="showSidebar">
               <div
-                v-for="line in plant.linesData"
-                :key="line.line_id"
-                class="sidebar mt-2"
+                v-if="plant"
+                style="max-height: 500px; overflow-y: scroll; margin-top: 10px"
               >
-                <div class="line-heading" style="padding: 4px 10px">
-                  <div class="d-flex flex-row align-center justify-start">
-                    <h4 style="margin-left: 5px; font-size: 13px">
-                      LINE <span> {{ line.line_snm }} </span>
-                    </h4>
-                    <div
-                      class="ml-2 rounded-pill pl-2 pr-2"
-                      style="
-                        background-color: #fff3e0;
-                        color: #fb8c00;
-                        font-size: 14px;
-                        font-weight: 500;
-                      "
-                    >
-                      {{ line.machines.length }} machine
+                <div
+                  v-for="line in plant.linesData"
+                  :key="line.line_id"
+                  class="sidebar mt-2"
+                >
+                  <div class="line-heading" style="padding: 4px 10px">
+                    <div class="d-flex flex-row align-center justify-start">
+                      <h4 style="margin-left: 5px; font-size: 13px">
+                        LINE <span> {{ line.line_snm }} </span>
+                      </h4>
+                      <div
+                        class="ml-2 rounded-pill pl-2 pr-2"
+                        style="
+                          background-color: #fff3e0;
+                          color: #fb8c00;
+                          font-size: 14px;
+                          font-weight: 500;
+                        "
+                      >
+                        {{ line.machines.length }} machine
+                      </div>
+                    </div>
+                    <div>
+                      <v-btn
+                        icon="mdi-delete"
+                        variant="text"
+                        size="small"
+                        @click="deleteLine(line.line_id)"
+                      ></v-btn>
+                      <v-btn
+                        icon="mdi-plus"
+                        variant="text"
+                        size="small"
+                        @click="addMachine(line.line_id)"
+                      ></v-btn>
                     </div>
                   </div>
-                  <div>
-                    <v-btn
-                      icon="mdi-delete"
-                      variant="text"
-                      size="small"
-                      @click="deleteLine(line.line_id)"
-                    ></v-btn>
-                    <v-btn
-                      icon="mdi-plus"
-                      variant="text"
-                      size="small"
-                      @click="addMachine(line.line_id)"
-                    ></v-btn>
-                  </div>
-                </div>
 
-                <v-list
-                  class="compressor-wrapper"
-                  style="padding-top: 0; padding-bottom: 8px"
-                >
-                  <v-list-item
-                    style="
-                      padding: 8px 8px;
-                      border-top: 1px solid #f1f5f9;
-                      text-align: left;
-                    "
-                    v-for="compressor in line.machines"
-                    :title="compressor.machine_nm"
-                    :key="compressor.machine_nm"
-                    subtitle="compressor"
+                  <v-list
+                    class="compressor-wrapper"
+                    style="padding-top: 0; padding-bottom: 8px"
                   >
-                    <template v-slot:prepend>
-                      <v-avatar color="transparent">
-                        <div>
-                          <v-img
-                            v-if="+compressor.status"
-                            width="35"
-                            src="@/assets/fanmotion.gif"
-                          ></v-img>
-                          <v-img
-                            v-else
-                            width="35"
-                            src="@/assets/fanStop.png"
-                          ></v-img>
-                        </div>
-                      </v-avatar>
-                    </template>
+                    <v-list-item
+                      style="
+                        padding: 8px 8px;
+                        border-top: 1px solid #f1f5f9;
+                        text-align: left;
+                      "
+                      v-for="compressor in line.machines"
+                      :title="compressor.machine_nm"
+                      :key="compressor.machine_nm"
+                      subtitle="compressor"
+                    >
+                      <template v-slot:prepend>
+                        <v-avatar color="transparent">
+                          <div>
+                            <v-img
+                              v-if="+compressor.status"
+                              width="35"
+                              src="@/assets/fanmotion.gif"
+                            ></v-img>
+                            <v-img
+                              v-else
+                              width="35"
+                              src="@/assets/fanStop.png"
+                            ></v-img>
+                          </div>
+                        </v-avatar>
+                      </template>
 
-                    <template v-slot:append>
-                      <button
-                        v-if="+compressor.status"
-                        class="machine-action-button mr-2"
-                        @click="turnOffMachine(compressor.machine_id)"
-                      >
-                        <v-icon>mdi-stop</v-icon>
-                      </button>
-                      <button
-                        v-else
-                        class="machine-action-button mr-2"
-                        @click="turnOnMachine(compressor.machine_id)"
-                      >
-                        <v-icon>mdi-play</v-icon>
-                      </button>
-                    </template>
-                  </v-list-item>
-                </v-list>
+                      <template v-slot:append>
+                        <button
+                          v-if="+compressor.status"
+                          class="machine-action-button mr-2"
+                          @click="turnOffMachine(compressor.machine_id)"
+                        >
+                          <v-icon>mdi-stop</v-icon>
+                        </button>
+                        <button
+                          v-else
+                          class="machine-action-button mr-2"
+                          @click="turnOnMachine(compressor.machine_id)"
+                        >
+                          <v-icon>mdi-play</v-icon>
+                        </button>
+                      </template>
+                    </v-list-item>
+                  </v-list>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <button
-          class="button-icon mr-2 ml-3"
-          @click="showSidebar = !showSidebar"
-        >
-          <v-icon v-if="showSidebar">mdi-unfold-more-vertical</v-icon>
-          <v-icon v-else>mdi-unfold-less-vertical</v-icon>
-        </button>
-      </div>
-
-      <img
-        v-if="plant"
-        :src="`${baseUrl}/image?path=${plant.background}`"
-        alt=""
-      />
-    </main>
-
-    <!-- add line dialogs -->
-    <v-dialog persistent v-model="addLineDialog" width="auto">
-      <v-card
-        class="mx-auto rounded-lg"
-        color="#fff"
-        min-width="500"
-        variant="flat"
-      >
-        <v-sheet
-          color="#f5f5f5"
-          class="py-1 px-5 d-flex justify-space-between align-center"
-        >
-          <div>
-            <h3>Create line</h3>
-          </div>
-          <v-btn
-            @click="addLineDialog = false"
-            icon="mdi-close"
-            variant="text"
-          ></v-btn>
-        </v-sheet>
-
-        <div class="w-full mt-5 mb-10 mx-5">
-          <div>
-            <p class="form-label">Line name</p>
-            <input type="text" v-model="line_name" class="form-input" />
-          </div>
-          <div class="mt-3">
-            <p class="form-label">Line sname</p>
-            <input type="text" v-model="line_sname" class="form-input" />
-          </div>
+          <button
+            class="button-icon mr-2 ml-3"
+            @click="showSidebar = !showSidebar"
+          >
+            <v-icon v-if="showSidebar">mdi-unfold-more-vertical</v-icon>
+            <v-icon v-else>mdi-unfold-less-vertical</v-icon>
+          </button>
         </div>
 
-        <v-sheet
-          class="py-3 px-5 d-flex justify-space-between align-center"
-          style="border-top: 1px solid #f3f4f6"
+        <img
+          v-if="plant"
+          :src="`${baseUrl}/image?path=${plant.background}`"
+          alt=""
+        />
+      </main>
+
+      <!-- add line dialogs -->
+      <v-dialog persistent v-model="addLineDialog" width="auto">
+        <v-card
+          class="mx-auto rounded-lg"
+          color="#fff"
+          min-width="500"
+          variant="flat"
         >
-          <div></div>
-          <div>
+          <v-sheet
+            color="#f5f5f5"
+            class="py-1 px-5 d-flex justify-space-between align-center"
+          >
+            <div>
+              <h3>Create line</h3>
+            </div>
             <v-btn
-              class="text-none text-subtitle-1 rounded-lg float-right"
-              color="#5865f2"
-              variant="flat"
-              @click="createLine"
-              :loading="isLoading"
-            >
-              Create Line
-            </v-btn>
-            <v-btn
-              class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
-              color="#f3f4f6"
-              variant="flat"
               @click="addLineDialog = false"
-            >
-              Cancel
-            </v-btn>
-          </div>
-        </v-sheet>
-      </v-card>
-    </v-dialog>
+              icon="mdi-close"
+              variant="text"
+            ></v-btn>
+          </v-sheet>
 
-    <!-- add machine dialog -->
-    <v-dialog persistent v-model="addMachineDialog" width="auto">
-      <v-card
-        class="mx-auto rounded-lg"
-        color="#fff"
-        min-width="500"
-        variant="flat"
-      >
-        <v-sheet
-          color="#f5f5f5"
-          class="py-1 px-5 d-flex justify-space-between align-center"
+          <div class="w-full mt-5 mb-10 mx-5">
+            <div>
+              <p class="form-label">Line name</p>
+              <input type="text" v-model="line_name" class="form-input" />
+            </div>
+            <div class="mt-3">
+              <p class="form-label">Line sname</p>
+              <input type="text" v-model="line_sname" class="form-input" />
+            </div>
+          </div>
+
+          <v-sheet
+            class="py-3 px-5 d-flex justify-space-between align-center"
+            style="border-top: 1px solid #f3f4f6"
+          >
+            <div></div>
+            <div>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg float-right"
+                color="#5865f2"
+                variant="flat"
+                @click="createLine"
+                :loading="isLoading"
+              >
+                Create Line
+              </v-btn>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
+                color="#f3f4f6"
+                variant="flat"
+                @click="addLineDialog = false"
+              >
+                Cancel
+              </v-btn>
+            </div>
+          </v-sheet>
+        </v-card>
+      </v-dialog>
+
+      <!-- add machine dialog -->
+      <v-dialog persistent v-model="addMachineDialog" width="auto">
+        <v-card
+          class="mx-auto rounded-lg"
+          color="#fff"
+          min-width="500"
+          variant="flat"
         >
-          <div>
-            <h3>Create machine</h3>
-          </div>
-          <v-btn
-            @click="addMachineDialog = false"
-            icon="mdi-close"
-            variant="text"
-          ></v-btn>
-        </v-sheet>
-
-        <div class="w-full mt-5 mx-5" style="padding-bottom: 150px">
-          <div>
-            <p class="form-label">Machine name</p>
-            <input
-              type="text"
-              v-model="machine.machine_nm"
-              class="form-input"
-            />
-          </div>
-
-          <div class="mt-3">
-            <p class="form-label">Select parameters</p>
-            <Multiselect
-              v-model="paramsValue"
-              mode="tags"
-              :close-on-select="false"
-              :searchable="true"
-              :options="options"
-              class="multiselect"
-            />
+          <v-sheet
+            color="#f5f5f5"
+            class="py-1 px-5 d-flex justify-space-between align-center"
+          >
+            <div>
+              <h3>Create machine</h3>
+            </div>
             <v-btn
-              class="text-none text-subtitle-2 rounded px-1 mt-2"
-              color="#f3f4f6"
-              variant="flat"
-              size="sm"
-              @click="showAddParamForm = true"
-            >
-              Can't find parameter
-            </v-btn>
-          </div>
-        </div>
-
-        <v-sheet
-          class="py-3 px-5 d-flex justify-space-between align-center"
-          style="border-top: 1px solid #f3f4f6"
-        >
-          <div></div>
-          <div>
-            <v-btn
-              class="text-none text-subtitle-1 rounded-lg float-right"
-              color="#5865f2"
-              variant="flat"
-              @click="setMachinePosition"
-              :loading="isLoading"
-            >
-              Set machine position
-            </v-btn>
-            <v-btn
-              class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
-              color="#f3f4f6"
-              variant="flat"
               @click="addMachineDialog = false"
-            >
-              Cancel
-            </v-btn>
-          </div>
-        </v-sheet>
-      </v-card>
-    </v-dialog>
+              icon="mdi-close"
+              variant="text"
+            ></v-btn>
+          </v-sheet>
 
-    <!-- add machine parameter dialog -->
-    <v-dialog persistent v-model="showAddParamForm" width="auto">
-      <v-card
-        class="mx-auto rounded-lg"
-        color="#fff"
-        min-width="500"
-        variant="flat"
-      >
-        <v-sheet
-          color="#f5f5f5"
-          class="py-1 px-5 d-flex justify-space-between align-center"
+          <div class="w-full mt-5 mx-5" style="padding-bottom: 150px">
+            <div>
+              <p class="form-label">Machine name</p>
+              <input
+                type="text"
+                v-model="machine.machine_nm"
+                class="form-input"
+              />
+            </div>
+
+            <div class="mt-3">
+              <p class="form-label">Select parameters</p>
+              <Multiselect
+                v-model="paramsValue"
+                mode="tags"
+                :close-on-select="false"
+                :searchable="true"
+                :options="options"
+                class="multiselect"
+              />
+              <v-btn
+                class="text-none text-subtitle-2 rounded px-1 mt-2"
+                color="#f3f4f6"
+                variant="flat"
+                size="sm"
+                @click="showAddParamForm = true"
+              >
+                Can't find parameter
+              </v-btn>
+            </div>
+          </div>
+
+          <v-sheet
+            class="py-3 px-5 d-flex justify-space-between align-center"
+            style="border-top: 1px solid #f3f4f6"
+          >
+            <div></div>
+            <div>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg float-right"
+                color="#5865f2"
+                variant="flat"
+                @click="setMachinePosition"
+                :loading="isLoading"
+              >
+                Set machine position
+              </v-btn>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
+                color="#f3f4f6"
+                variant="flat"
+                @click="addMachineDialog = false"
+              >
+                Cancel
+              </v-btn>
+            </div>
+          </v-sheet>
+        </v-card>
+      </v-dialog>
+
+      <!-- add machine parameter dialog -->
+      <v-dialog persistent v-model="showAddParamForm" width="auto">
+        <v-card
+          class="mx-auto rounded-lg"
+          color="#fff"
+          min-width="500"
+          variant="flat"
         >
-          <div>
-            <h3>Create parameters</h3>
-          </div>
-          <v-btn
-            @click="showAddParamForm = false"
-            icon="mdi-close"
-            variant="text"
-          ></v-btn>
-        </v-sheet>
-
-        <div class="w-full my-5 mx-5">
-          <div v-if="showAddParamForm" class="mt-5">
-            <v-row>
-              <v-col>
-                <p class="form-label">Device name</p>
-                <input
-                  type="text"
-                  v-model="parametersData.dev_nm"
-                  class="form-input"
-                />
-              </v-col>
-              <v-col>
-                <p class="form-label">Group name</p>
-                <input
-                  type="text"
-                  v-model="parametersData.group_nm"
-                  class="form-input"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <p class="form-label">Tag name</p>
-                <input
-                  type="text"
-                  v-model="parametersData.tag_nm"
-                  class="form-input"
-                />
-              </v-col>
-              <v-col>
-                <p class="form-label">Is main</p>
-                <v-switch
-                  color="primary"
-                  true-value="1"
-                  false-value="0"
-                  v-model="parametersData.is_main"
-                  hide-details
-                  inset
-                ></v-switch>
-              </v-col>
-            </v-row>
-          </div>
-        </div>
-
-        <v-sheet
-          class="py-3 px-5 d-flex justify-space-between align-center"
-          style="border-top: 1px solid #f3f4f6"
-        >
-          <div></div>
-          <div>
+          <v-sheet
+            color="#f5f5f5"
+            class="py-1 px-5 d-flex justify-space-between align-center"
+          >
+            <div>
+              <h3>Create parameters</h3>
+            </div>
             <v-btn
-              class="text-none text-subtitle-1 rounded-lg float-right"
-              color="#5865f2"
-              variant="flat"
-              @click="addParameter"
-              :loading="isLoading"
-            >
-              Create parameter
-            </v-btn>
-            <v-btn
-              class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
-              color="#f3f4f6"
-              variant="flat"
               @click="showAddParamForm = false"
-            >
-              Cancel
-            </v-btn>
-          </div>
-        </v-sheet>
-      </v-card>
-    </v-dialog>
+              icon="mdi-close"
+              variant="text"
+            ></v-btn>
+          </v-sheet>
 
-    <!-- set machine position -->
-    <VueDragResize
-      v-if="isMachineReadyToSetThePosition"
-      class="draggable"
-      :isActive="false"
-      :isResizable="false"
-      :isDraggable="true"
-      :w="300"
-      :h="55"
-      :x="800"
-      :y="400"
-      v-on:resizing="resize"
-      v-on:dragging="resize"
-      style="cursor: move"
-    >
-      <div class="machine-card-list">
-        <div class="d-flex justify-space-between align-center pa-1">
-          <div class="d-flex align-center">
-            <div class="machine-status mx-2">
-              <v-avatar color="transparent">
-                <div>
-                  <v-img width="35" src="@/assets/fanStop.png"></v-img>
-                </div>
-              </v-avatar>
-            </div>
-            <div class="machine-description mt-1">
-              <h2>name</h2>
-              <span>Line nya</span>
+          <div class="w-full my-5 mx-5">
+            <div v-if="showAddParamForm" class="mt-5">
+              <v-row>
+                <v-col>
+                  <p class="form-label">Device name</p>
+                  <input
+                    type="text"
+                    v-model="parametersData.dev_nm"
+                    class="form-input"
+                  />
+                </v-col>
+                <v-col>
+                  <p class="form-label">Group name</p>
+                  <input
+                    type="text"
+                    v-model="parametersData.group_nm"
+                    class="form-input"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <p class="form-label">Tag name</p>
+                  <input
+                    type="text"
+                    v-model="parametersData.tag_nm"
+                    class="form-input"
+                  />
+                </v-col>
+                <v-col>
+                  <p class="form-label">Is main</p>
+                  <v-switch
+                    color="primary"
+                    true-value="1"
+                    false-value="0"
+                    v-model="parametersData.is_main"
+                    hide-details
+                    inset
+                  ></v-switch>
+                </v-col>
+              </v-row>
             </div>
           </div>
-          <div class="machine-action">
-            <button
-              class="machine-action-button mr-2"
-              @click="addMachineAction"
-            >
-              Save machine
-            </button>
-          </div>
-        </div>
-        <div class="mx-4"></div>
-      </div>
-    </VueDragResize>
 
-    <!-- map the machines -->
-    <div v-if="machines">
+          <v-sheet
+            class="py-3 px-5 d-flex justify-space-between align-center"
+            style="border-top: 1px solid #f3f4f6"
+          >
+            <div></div>
+            <div>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg float-right"
+                color="#5865f2"
+                variant="flat"
+                @click="addParameter"
+                :loading="isLoading"
+              >
+                Create parameter
+              </v-btn>
+              <v-btn
+                class="text-none text-subtitle-1 rounded-lg mr-2 float-right"
+                color="#f3f4f6"
+                variant="flat"
+                @click="showAddParamForm = false"
+              >
+                Cancel
+              </v-btn>
+            </div>
+          </v-sheet>
+        </v-card>
+      </v-dialog>
+
+      <!-- set machine position -->
       <VueDragResize
-        v-for="machine in machines"
-        :key="machine.machine_nm"
+        v-if="isMachineReadyToSetThePosition"
         class="draggable"
         :isActive="false"
         :isResizable="false"
-        :isDraggable="selectedEditableMachine == machine.machine_id"
+        :isDraggable="true"
         :w="300"
         :h="55"
-        :x="machine.x_axis"
-        :y="machine.y_axis"
+        :x="800"
+        :y="400"
         v-on:resizing="resize"
         v-on:dragging="resize"
+        style="cursor: move"
       >
-        <div
-          class="machine-card-list"
-          :style="`${
-            +machine.status
-              ? 'border: 3px solid #10b981'
-              : 'border: 3px solid #ef4444'
-          }`"
-        >
+        <div class="machine-card-list">
           <div class="d-flex justify-space-between align-center pa-1">
             <div class="d-flex align-center">
               <div class="machine-status mx-2">
                 <v-avatar color="transparent">
                   <div>
-                    <v-img
-                      v-if="+machine.status"
-                      width="35"
-                      src="@/assets/fanmotion.gif"
-                    ></v-img>
-                    <v-img v-else width="35" src="@/assets/fanStop.png"></v-img>
+                    <v-img width="35" src="@/assets/fanStop.png"></v-img>
                   </div>
                 </v-avatar>
               </div>
               <div class="machine-description mt-1">
-                <h2>{{ machine.machine_nm }}</h2>
-                <span>Line {{ machine.line_nm }}</span>
+                <h2>name</h2>
+                <span>Line nya</span>
               </div>
             </div>
-            <div class="machine-action d-flex">
-              <div class="edit-mode d-flex">
-                <button
-                  v-if="selectedEditableMachine != machine.machine_id"
-                  class="machine-action-button mr-2"
-                  @click="
-                    () => {
-                      selectedEditableMachine = machine.machine_id;
-                      selectedLineID = machine.line_id;
-                    }
-                  "
-                >
-                  <v-icon>mdi-cog-sync</v-icon>
-                </button>
-                <button
-                  v-if="selectedEditableMachine == machine.machine_id"
-                  class="machine-action-button mr-2"
-                  @click="editMachine"
-                >
-                  <v-icon>mdi-check</v-icon>
-                </button>
-                <button
-                  v-if="selectedEditableMachine == machine.machine_id"
-                  @click="deleteMachine(machine.machine_id)"
-                  class="machine-action-button mr-2"
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </button>
-              </div>
-              <div
-                v-if="selectedEditableMachine != machine.machine_id"
-                class="view-mode"
+            <div class="machine-action">
+              <button
+                class="machine-action-button mr-2"
+                @click="addMachineAction"
               >
-                <button
-                  v-if="+machine.status"
-                  class="machine-action-button mr-2"
-                  @click="turnOffMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-stop</v-icon>
-                </button>
-                <button
-                  v-else
-                  class="machine-action-button mr-2"
-                  @click="turnOnMachine(machine.machine_id)"
-                >
-                  <v-icon>mdi-play</v-icon>
-                </button>
-              </div>
+                Save machine
+              </button>
             </div>
           </div>
           <div class="mx-4"></div>
         </div>
       </VueDragResize>
+
+      <!-- map the machines -->
+      <div v-if="machines">
+        <VueDragResize
+          v-for="machine in machines"
+          :key="machine.machine_nm"
+          class="draggable"
+          :isActive="false"
+          :isResizable="false"
+          :isDraggable="selectedEditableMachine == machine.machine_id"
+          :w="300"
+          :h="55"
+          :x="machine.x_axis"
+          :y="machine.y_axis"
+          v-on:resizing="resize"
+          v-on:dragging="resize"
+        >
+          <div
+            class="machine-card-list"
+            :style="`${
+              +machine.status
+                ? 'border: 3px solid #10b981'
+                : 'border: 3px solid #ef4444'
+            }`"
+          >
+            <div class="d-flex justify-space-between align-center pa-1">
+              <div class="d-flex align-center">
+                <div class="machine-status mx-2">
+                  <v-avatar color="transparent">
+                    <div>
+                      <v-img
+                        v-if="+machine.status"
+                        width="35"
+                        src="@/assets/fanmotion.gif"
+                      ></v-img>
+                      <v-img
+                        v-else
+                        width="35"
+                        src="@/assets/fanStop.png"
+                      ></v-img>
+                    </div>
+                  </v-avatar>
+                </div>
+                <div class="machine-description mt-1">
+                  <h2>{{ machine.machine_nm }}</h2>
+                  <span>Line {{ machine.line_nm }}</span>
+                </div>
+              </div>
+              <div class="machine-action d-flex">
+                <div class="edit-mode d-flex">
+                  <button
+                    v-if="selectedEditableMachine != machine.machine_id"
+                    class="machine-action-button mr-2"
+                    @click="
+                      () => {
+                        selectedEditableMachine = machine.machine_id;
+                        selectedLineID = machine.line_id;
+                      }
+                    "
+                  >
+                    <v-icon>mdi-cog-sync</v-icon>
+                  </button>
+                  <button
+                    v-if="selectedEditableMachine == machine.machine_id"
+                    class="machine-action-button mr-2"
+                    @click="editMachine"
+                  >
+                    <v-icon>mdi-check</v-icon>
+                  </button>
+                  <button
+                    v-if="selectedEditableMachine == machine.machine_id"
+                    @click="deleteMachine(machine.machine_id)"
+                    class="machine-action-button mr-2"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </button>
+                </div>
+                <div
+                  v-if="selectedEditableMachine != machine.machine_id"
+                  class="view-mode"
+                >
+                  <button
+                    v-if="+machine.status"
+                    class="machine-action-button mr-2"
+                    @click="turnOffMachine(machine.machine_id)"
+                  >
+                    <v-icon>mdi-stop</v-icon>
+                  </button>
+                  <button
+                    v-else
+                    class="machine-action-button mr-2"
+                    @click="turnOnMachine(machine.machine_id)"
+                  >
+                    <v-icon>mdi-play</v-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="mx-4"></div>
+          </div>
+        </VueDragResize>
+      </div>
     </div>
   </div>
 </template>
@@ -522,12 +529,14 @@ import { mapGetters } from "vuex";
 import { toast } from "vue-sonner";
 import Multiselect from "@vueform/multiselect";
 import VueDragResize from "vue3-drag-resize";
+import AppBar from "@/layouts/AppBar.vue";
 
 export default {
   name: "CompressorDetailView",
   components: {
     Multiselect,
     VueDragResize,
+    AppBar,
   },
   data() {
     return {
@@ -738,7 +747,7 @@ export default {
         setTimeout(() => {
           this.getMachines();
           this.getPlantById();
-        }, 2000)
+        }, 2000);
       }
     },
     async turnOffMachine(machine_id) {
@@ -752,7 +761,7 @@ export default {
         setTimeout(() => {
           this.getMachines();
           this.getPlantById();
-        }, 2000)
+        }, 2000);
       }
     },
     mapParamsDataToSelectOptionValue() {
