@@ -206,10 +206,10 @@ export default {
       console.log(error);
     } finally {
       this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
-
+      await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
       setInterval(async () => {
         await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
-      }, 3000);
+      }, 10000);  
     }
   },
   computed: {
