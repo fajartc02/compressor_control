@@ -1,6 +1,5 @@
 <template>
   <div>
-    <AppBar />
     <Toaster />
     <v-row style="margin: 3px">
       <v-col cols="12">
@@ -144,15 +143,13 @@
     </v-row>
   </div>
 </template>
-    
+
 <script>
 import { mapGetters } from "vuex";
 import { toast } from "vue-sonner";
-import AppBar from "@/layouts/AppBar.vue";
 
 export default {
   name: "CompressorView",
-  components: { AppBar },
   data() {
     return {
       addPlantDialog: false,
@@ -202,7 +199,7 @@ export default {
   },
 };
 </script>
-  
+
 <style scoped>
 .main-area {
   border-radius: 10px;

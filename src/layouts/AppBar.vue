@@ -22,44 +22,41 @@
           prepend-avatar="https://randomuser.me/api/portraits/men/1.jpg"
           :title="isLoggedIn"
           subtitle="Logged in"
-        ></v-list-item>
+        />
       </template>
-      <v-divider></v-divider>
-      <v-list class="mt-2" v-model:opened="isOpen">
+      <v-divider />
+      <v-list
+        class="mt-2"
+        v-model:opened="isOpen"
+      >
         <router-link to="/" style="text-decoration: none">
           <v-list-item
             prepend-icon="mdi-home-variant"
             title="Home"
             class="menu-item"
-          ></v-list-item>
+          />
         </router-link>
         <router-link to="/compressor" style="text-decoration: none">
           <v-list-item
             prepend-icon="mdi-washing-machine"
             title="Compressor"
             class="menu-item"
-          ></v-list-item>
+          />
         </router-link>
-        <v-list-group value="Master">
+        <v-list-group value="Admin">
           <template v-slot:activator="{ props }">
             <v-list-item
               v-bind="props"
-              prepend-icon="mdi-file-document"
-              title="Master"
+              prepend-icon="mdi-cog"
+              title="Admin"
               class="menu-item"
-            ></v-list-item>
+            />
           </template>
-          <router-link
-            v-for="(menu, i) in masterMenu"
-            :key="i"
-            :to="menu.path"
-            style="text-decoration: none"
-          >
+          <router-link v-for="(menu, i) in masterMenu" :key="i" :to="menu.path" style="text-decoration: none;">
             <v-list-item
-              class="text-white menu-item"
               :title="menu.title"
-              :value="menu.title"
-            ></v-list-item>
+              class="menu-item"
+            />
           </router-link>
         </v-list-group>
       </v-list>
@@ -80,7 +77,7 @@ export default {
     return {
       drawer: false,
       showNavigation: true,
-      open: ["Master"],
+      isOpen: ["Master"],
       masterMenu: [
         {
           path: "/master/users",
@@ -90,6 +87,14 @@ export default {
           path: "/master/parameters",
           title: "Parameters",
         },
+        {
+          path: "/master/formula",
+          title: "Formula",
+        },
+      ],
+      admins: [
+        ['Management', 'mdi-account-multiple-outline'],
+        ['Settings', 'mdi-cog-outline'],
       ],
     };
   },

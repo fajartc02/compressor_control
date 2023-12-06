@@ -1,7 +1,5 @@
 <template>
   <div>
-    <AppBar />
-
     <div style="padding: 20px">
       <main class="main-area">
         <div class="main-area-aside d-flex align-start">
@@ -123,17 +121,15 @@
     </div>
   </div>
 </template>
-      
+
   <script>
 import { mapGetters } from "vuex";
 import VueDragResize from "vue3-drag-resize";
-import AppBar from "@/layouts/AppBar.vue";
 
 export default {
   name: "Home",
   components: {
     VueDragResize,
-    AppBar,
   },
   data() {
     return {
@@ -219,7 +215,7 @@ export default {
 </script>
 
 
-<style src="@vueform/multiselect/themes/default.css"></style>    
+<style src="@vueform/multiselect/themes/default.css"></style>
   <style scoped>
 .disabled {
   background-color: #f3f4f6 !important;
