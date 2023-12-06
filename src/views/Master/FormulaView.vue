@@ -39,7 +39,7 @@
                             <v-select
                               v-model="item.param_id"
                               :items="PARAMETERS_DATA"
-                              item-title="tag_name"
+                              item-title="dev_name"
                               item-value="tag_name"
                               label="Parameter"
                               return-object
@@ -76,7 +76,7 @@
                               v-if="item.isAction"
                               v-model="item.param_out_id"
                               :items="PARAMETERS_DATA"
-                              item-title="tag_name"
+                              item-title="dev_name"
                               item-value="client_hdl"
                               label="Parameter to Action"
                               return-object
