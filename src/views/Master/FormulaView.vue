@@ -80,11 +80,15 @@
                               v-if="item.isAction"
                               v-model="item.param_out_id"
                               :items="PARAMETERS_DATA"
-                              item-title="tag_name"
-                              item-value="client_hdl"
+                              item-title="dev_name"
+                              item-value="dev_name"
                               label="Parameter to Action"
                               return-object
-                            ></v-select>
+                            >
+                              <template v-slot:item="{ props, item }">
+                                <v-list-item v-bind="props" :subtitle="`${item.raw.dev_name}.${item.raw.group_name}.${item.raw.tag_name}`"></v-list-item>
+                              </template>
+                            </v-select>
                             <v-select
                             v-if="item.isAction"
                               v-model="item.param_out_state"
