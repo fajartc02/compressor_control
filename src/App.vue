@@ -3,6 +3,7 @@
     <Toaster position="top-center" closeButton />
 
     <v-app>
+      <AppBar />
       <v-main>
         <router-view />
       </v-main>
@@ -11,6 +12,7 @@
 </template>
 
 <script>
+import AppBar from "@/layouts/AppBar.vue";
 import { Toaster } from "vue-sonner";
 
 export default {
@@ -18,17 +20,6 @@ export default {
   data: () => ({
     drawer: false,
     showNavigation: true,
-    open: ["Master"],
-    masterMenu: [
-      {
-        path: "/master/users",
-        title: "Users",
-      },
-      {
-        path: "/master/parameters",
-        title: "Parameters",
-      },
-    ],
   }),
   mounted() {
     if (!this.isLoggedIn) {
@@ -40,8 +31,10 @@ export default {
       return localStorage.getItem("user");
     },
   },
-  components: { Toaster },
+  components: {
+    Toaster,
+    AppBar
+  },
 };
 </script>
 
- 

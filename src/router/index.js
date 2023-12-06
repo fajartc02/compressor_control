@@ -16,15 +16,25 @@ const routes = [{
             import ("@/views/CompressorDetail.vue"),
     },
     {
-        path: "/auth/login",
-        component: () =>
-            import ("@/views/auth/Login.vue"),
-    },
-    {
         path: "/master/users",
         component: () =>
             import ("@/views/Master/UsersView.vue"),
     },
+    {
+        path: "/master/parameters",
+        component: () =>
+            import ("@/views/Master/ParametersView.vue"),
+    },
+    {
+        path: "/master/formula",
+        component: () =>
+            import ("@/views/Master/FormulaView.vue"),
+    },
+    {
+        path: "/auth/login",
+        component: () =>
+            import ("@/views/auth/Login.vue"),
+    }
 ];
 
 const router = createRouter({
