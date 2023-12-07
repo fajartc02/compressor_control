@@ -8,6 +8,7 @@
               <v-col>
                 <h3>Formula</h3>
               </v-col>
+
               <v-spacer />
               <v-col cols="2">
                 <v-btn @click="dialogShow">Add Formula</v-btn>
@@ -134,6 +135,7 @@
               </v-col>
             </v-row>
           </v-card-title>
+          <hr>
           <v-card-text>
             <v-table>
               <thead>
@@ -156,6 +158,7 @@
                         <tr>
                           <th>No</th>
                           <th>Parameter</th>
+                          <th>Current Value</th>
                           <th>Operator</th>
                           <th>Limit Value</th>
                           <th>Conjunction</th>
@@ -165,8 +168,9 @@
                       </thead>
                       <tbody>
                         <tr v-for="itm in item.children" :key="itm.formula_id">
-                          <td style="width: 50px!important">{{ itm.no }}</td>
+                          <td style="width: 100px!important">{{ itm.no }}</td>
                           <td style="width: 300px!important">{{ itm.dev_name }}.{{ itm.group_name }}.{{ itm.tag_name }}</td>
+                          <td style="width: 300px!important">{{ itm.reg_value }}</td>
                           <td style="width: 300px!important">{{ itm.operator_desc }}</td>
                           <td style="width: 100px!important">{{ itm.limit_vals }}</td>
                           <td>{{ itm.conjunction_desc }}</td>
@@ -180,11 +184,11 @@
                     </v-table>
                   </td>
                   <td style="text-align: center;">
-                    <v-btn color="success">
+                    <v-btn color="success" disabled>
                       <v-icon>mdi-file-edit</v-icon>
                     </v-btn>
                     |
-                    <v-btn color="red">
+                    <v-btn color="red" disabled>
                       <v-icon>mdi-delete-alert</v-icon>
                     </v-btn>
                   </td>
