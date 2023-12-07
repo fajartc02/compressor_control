@@ -4,10 +4,6 @@
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <h3 class="ml-2">Compressor Control System</h3>
       <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-account-badge</v-icon>
-      </v-btn>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
