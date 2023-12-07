@@ -18,6 +18,12 @@
                 >
                   <v-card title="Formula">
                     <v-card-text>
+                      <v-text-field
+                        style="margin-bottom: 5px;"
+                        v-model="formula_nm"
+                        label="Formula Name"
+                        required
+                      ></v-text-field>
                       <v-btn @click="addCondition" :disabled="containerFormula.length > 1">Add Formula</v-btn>
                       <v-expansion-panels class="mb-6">
                         <v-expansion-panel
@@ -80,8 +86,8 @@
                               v-if="item.isAction"
                               v-model="item.param_out_id"
                               :items="PARAMETERS_DATA"
-                              item-title="dev_name"
-                              item-value="dev_name"
+                              item-title="tag_name"
+                              item-value="client_hdl"
                               label="Parameter to Action"
                               return-object
                             >
@@ -133,14 +139,16 @@
               <thead>
                 <tr>
                   <th>No</th>
+                  <th>Formula Name</th>
                   <th>Machine</th>
                   <th>Parameters</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody v-if="FORMULAS_DATA">
+              <tbody v-if="FORMULAS_DATA?.length > 0">
                 <tr v-for="(item, i) in FORMULAS_DATA" :key="i">
                   <td>{{ item.no }}</td>
+                  <td>{{ item.formula_nm }}</td>
                   <td>{{ item.machine_nm }}</td>
                   <td>
                     <v-table :hover="true">
@@ -158,7 +166,7 @@
                       <tbody>
                         <tr v-for="itm in item.children" :key="itm.formula_id">
                           <td style="width: 50px!important">{{ itm.no }}</td>
-                          <td style="width: 300px!important">{{ itm.dev_name }} {{ itm.group_name }}</td>
+                          <td style="width: 300px!important">{{ itm.dev_name }}.{{ itm.group_name }}.{{ itm.tag_name }}</td>
                           <td style="width: 300px!important">{{ itm.operator_desc }}</td>
                           <td style="width: 100px!important">{{ itm.limit_vals }}</td>
                           <td>{{ itm.conjunction_desc }}</td>
@@ -184,7 +192,7 @@
               </tbody>
               <tbody v-else>
                 <tr>
-                  <th colspan="7">Tidak Ada Formula</th>
+                  <th style="text-align: center;" colspan="7">Tidak Ada Formula</th>
                 </tr>
               </tbody>
             </v-table>
@@ -228,13 +236,9 @@ export default {
         param_out_state: null
       },
       containerFormula: [],
-      headers: [
-        {
-          title: 'No',
-          key: 'no'
-        }
-      ],
+      headers: [],
       machines: [],
+      formula_nm: null,
     }
   },
   computed: {
@@ -300,7 +304,9 @@ export default {
     },
     async actPostFormula() {
       try {
-        this.$store.dispatch('POST_FORMULA', {containerFormulas: this.containerFormula})
+        await this.$store.dispatch('POST_FORMULA', {containerFormulas: this.containerFormula, formula_nm: this.formula_nm})
+        await this.dialogDismiss()
+        toast.success('Success to add formula')
       } catch (error) {
         toast.error('Failed to post formulas')
       }
@@ -323,6 +329,19 @@ export default {
       this.isShowDialog = true
     },
     async dialogDismiss() {
+      this.formula_nm = null
+      this.form = {
+        machine_id: null,
+        param_id: null,
+        operator_id: null,
+        limit_vals: 0,
+        conjuntion_id: null,
+        param_out_id: null,
+        isMoreParameters: true,
+        isAction: false,
+        param_out_state: null
+      }
+      this.containerFormula = []
       this.isShowDialog = false
     }
   },
