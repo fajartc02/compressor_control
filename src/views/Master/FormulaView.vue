@@ -144,6 +144,7 @@
                   <th>Formula Name</th>
                   <th>Machine</th>
                   <th>Parameters</th>
+                  <th>Active</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -182,6 +183,13 @@
                         </tr>
                       </tbody>
                     </v-table>
+                  </td>
+                  <td>
+                    <v-switch
+                      :model-value="item.is_active"
+                      color="success"
+                      readonly
+                    />
                   </td>
                   <td style="text-align: center;">
                     <v-btn color="success" disabled>
