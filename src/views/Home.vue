@@ -151,8 +151,8 @@ export default {
   },
   data() {
     return {
-      // baseUrl: import.meta.env.VITE_API_URL,
-      baseUrl: "http://localhost:7200/api/v1",
+      baseUrl: import.meta.env.VITE_API_URL,
+      // baseUrl: "http://localhost:7200/api/v1",
       plantIndexPosition: 0,
       selectedPlantId: null,
       machineStatus: true,
