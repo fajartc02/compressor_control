@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build-deploy": "vite build && cp ./dist/index.html ./dist/404.html",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
   },

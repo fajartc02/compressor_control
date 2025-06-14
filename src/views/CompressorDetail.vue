@@ -439,7 +439,7 @@
             :style="`${
               +machine.status
                 ? 'border: 3px solid #10b981'
-                : 'border: 3px solid #ef4444'
+                : 'border: 3px solid #A9A9A9'
             }`"
           >
             <div class="d-flex justify-space-between align-center pa-1">
