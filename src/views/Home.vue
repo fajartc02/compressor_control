@@ -69,6 +69,22 @@
                 : 'border: 3px solid #A9A9A9'
             }`"
           >
+            <div
+              v-if="machine.is_formula_active != null"
+              class="text-center"
+              style="
+                padding: auto;
+                height: 30px;
+                width: 30px;
+                background-color: #10b981;
+                position: absolute;
+                border-radius: 50%;
+                top: 15px;
+                left: -15px;
+              "
+            >
+              A
+            </div>
             <div class="d-flex justify-space-between align-center pa-1">
               <div class="d-flex align-center">
                 <div class="machine-status mx-2">
@@ -135,12 +151,13 @@ export default {
   },
   data() {
     return {
-      baseUrl: import.meta.env.VITE_API_URL,
+      // baseUrl: import.meta.env.VITE_API_URL,
+      baseUrl: "http://localhost:7200/api/v1",
       plantIndexPosition: 0,
       selectedPlantId: null,
       machineStatus: true,
       intervalId: null,
-      isReadyToOperate: true
+      isReadyToOperate: true,
     };
   },
   methods: {
@@ -174,52 +191,51 @@ export default {
     },
     async turnOnMachine(machine_id) {
       try {
-        if(this.isReadyToOperate) {
-          this.isReadyToOperate = false
+        if (this.isReadyToOperate) {
+          this.isReadyToOperate = false;
           await this.$store.dispatch("TURN_ON_MACHINE", {
             machine_id: machine_id,
           });
         }
       } catch (error) {
-        this.isReadyToOperate = true
+        this.isReadyToOperate = true;
         console.log(error);
       } finally {
-
         setTimeout(() => {
           this.getMachines(this.selectedPlantId);
-          this.isReadyToOperate = true
+          this.isReadyToOperate = true;
         }, 2000);
       }
     },
     async turnOffMachine(machine_id) {
       try {
-        if(this.isReadyToOperate) {
-          this.isReadyToOperate = false
+        if (this.isReadyToOperate) {
+          this.isReadyToOperate = false;
           await this.$store.dispatch("TURN_OFF_MACHINE", {
             machine_id: machine_id,
           });
         }
       } catch (error) {
         console.log(error);
-        this.isReadyToOperate = true
+        this.isReadyToOperate = true;
       } finally {
         setTimeout(() => {
-          this.isReadyToOperate = true
+          this.isReadyToOperate = true;
           this.getMachines(this.selectedPlantId);
         }, 2000);
       }
     },
     async startInterval() {
-      if(this.intervalId) clearInterval(this.intervalId)
+      if (this.intervalId) clearInterval(this.intervalId);
       this.intervalId = setInterval(async () => {
         // console.log('running interval in state and will delete ')
-        this.selectedPlantId = this.plants[this.plantIndexPosition].uuid
+        this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
         await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
         // console.log(this.intervalId)
-        await clearInterval(this.intervalId)
-        await this.startInterval()
-      }, 10000)
-    }
+        await clearInterval(this.intervalId);
+        await this.startInterval();
+      }, 10000);
+    },
   },
   async mounted() {
     try {
@@ -229,10 +245,10 @@ export default {
     } finally {
       this.selectedPlantId = this.plants[this.plantIndexPosition].uuid;
       await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
-      await this.startInterval()
+      await this.startInterval();
       // setInterval(async () => {
       //   await this.getMachines(this.plants[this.plantIndexPosition].uuid); // get machines data
-      // }, 10000);  
+      // }, 10000);
     }
   },
   computed: {

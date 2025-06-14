@@ -4,6 +4,19 @@
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <h3 class="ml-2">Compressor Control System</h3>
       <v-spacer></v-spacer>
+      <div
+        class="text-center"
+        style="
+          padding: auto;
+          height: 30px;
+          width: 30px;
+          background-color: #10b981;
+          border-radius: 50%;
+        "
+      >
+        A
+      </div>
+      <label class="ml-3 mr-3">: Compressor Auto</label>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
@@ -21,10 +34,7 @@
         />
       </template>
       <v-divider />
-      <v-list
-        class="mt-2"
-        v-model:opened="isOpen"
-      >
+      <v-list class="mt-2" v-model:opened="isOpen">
         <router-link to="/" style="text-decoration: none">
           <v-list-item
             prepend-icon="mdi-home-variant"
@@ -48,11 +58,13 @@
               class="menu-item"
             />
           </template>
-          <router-link v-for="(menu, i) in masterMenu" :key="i" :to="menu.path" style="text-decoration: none;">
-            <v-list-item
-              :title="menu.title"
-              class="menu-item"
-            />
+          <router-link
+            v-for="(menu, i) in masterMenu"
+            :key="i"
+            :to="menu.path"
+            style="text-decoration: none"
+          >
+            <v-list-item :title="menu.title" class="menu-item" />
           </router-link>
         </v-list-group>
       </v-list>
@@ -89,8 +101,8 @@ export default {
         },
       ],
       admins: [
-        ['Management', 'mdi-account-multiple-outline'],
-        ['Settings', 'mdi-cog-outline'],
+        ["Management", "mdi-account-multiple-outline"],
+        ["Settings", "mdi-cog-outline"],
       ],
     };
   },

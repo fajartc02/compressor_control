@@ -3,65 +3,84 @@ import { toast } from "vue-sonner";
 
 
 export default {
-    state: {
-        formulas: null,
-        formulaDetail: null,
+  state: {
+    formulas: null,
+    formulaDetail: null,
+  },
+  mutations: {
+    SET_FORMULA_DATA(state, payload) {
+      state.formulas = payload;
     },
-    mutations: {
-        SET_FORMULA_DATA(state, payload) {
-            state.formulas = payload;
-        },
-        SET_FORMULA_DETAILS(state, payload) {
-            state.formulaDetail = payload;
-        },
+    SET_FORMULA_DETAILS(state, payload) {
+      state.formulaDetail = payload;
     },
-    getters: {
-        FORMULAS_DATA: (state) => {
-            return state.formulas
-        },
-        FORMULA_DETAIL: (state) => {
-            return state.formulaDetailq
-        }
-
+  },
+  getters: {
+    FORMULAS_DATA: (state) => {
+      return state.formulas
     },
-    actions: {
-        async FETCH_FORMULAS({ commit }, id) {
-            if (id) {
-                await API().get(`/master/formulas/view?id=${id}`)
-                    .then((res) => {
-                        commit("SET_FORMULA_DETAILS", res.data.data[0]);
-                    })
-                    .catch((e) => {
-                        toast.error(e.message);
-                        console.log(e);
-                    });
-            } else {
-                await API().get("/master/formulas/view")
-                    .then((res) => {
-                        commit("SET_FORMULA_DATA", res.data.data);
-                    })
-                    .catch((e) => {
-                        toast.error(e.message);
-                        console.log(e);
-                    });
-            }
-        },
-        async POST_FORMULA({ commit }, data) {
-            try {
-                await API().post("/master/formulas/add", data)
-                    .then(() => {
-                        API().get("/master/formulas/view")
-                            .then((res) => {
-                                commit("SET_FORMULA_DATA", res.data.data);
-                            })
-                    })
-                    .catch((e) => {
-                        toast.error(e.message);
-                        console.log(e);
-                    });
-            } catch (error) {
-                toast.error('Error to POST formula')
-            }
-        }
+    FORMULA_DETAIL: (state) => {
+      return state.formulaDetailq
     }
+
+  },
+  actions: {
+    async FETCH_FORMULAS({ commit }, id) {
+      if (id) {
+        await API().get(`/master/formulas/view?id=${id}`)
+          .then((res) => {
+            commit("SET_FORMULA_DETAILS", res.data.data[0]);
+          })
+          .catch((e) => {
+            toast.error(e.message);
+            console.log(e);
+          });
+      } else {
+        await API().get("/master/formulas/view")
+          .then((res) => {
+            commit("SET_FORMULA_DATA", res.data.data);
+          })
+          .catch((e) => {
+            toast.error(e.message);
+            console.log(e);
+          });
+      }
+    },
+    async POST_FORMULA({ commit }, data) {
+      try {
+        await API().post("/master/formulas/add", data)
+          .then(() => {
+            API().get("/master/formulas/view")
+              .then((res) => {
+                commit("SET_FORMULA_DATA", res.data.data);
+              })
+          })
+          .catch((e) => {
+            toast.error(e.message);
+            console.log(e);
+          });
+      } catch (error) {
+        toast.error('Error to POST formula')
+      }
+    },
+    async EDIT_FORMULA({ commit }, data) {
+      try {
+        const formulaId = data.formula_id
+        delete data.formula_id
+        await API().put(`/master/formulas/edit/${formulaId}`, data)
+          .then(() => {
+            API().get("/master/formulas/view")
+              .then((res) => {
+                commit("SET_FORMULA_DATA", res.data.data);
+              })
+          })
+          .catch((e) => {
+            toast.error(e.message);
+            console.log(e);
+          });
+      } catch (error) {
+        toast.error('Error to POST formula')
+      }
+    }
+  }
 }

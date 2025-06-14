@@ -12,20 +12,20 @@
               <v-spacer />
               <v-col cols="2">
                 <v-btn @click="dialogShow">Add Formula</v-btn>
-                <v-dialog
-                  v-model="isShowDialog"
-                  width="600"
-                  persistent
-                >
+                <v-dialog v-model="isShowDialog" width="600" persistent>
                   <v-card title="Formula">
                     <v-card-text>
                       <v-text-field
-                        style="margin-bottom: 5px;"
+                        style="margin-bottom: 5px"
                         v-model="formula_nm"
                         label="Formula Name"
                         required
                       ></v-text-field>
-                      <v-btn @click="addCondition" :disabled="containerFormula.length > 1">Add Formula</v-btn>
+                      <v-btn
+                        @click="addCondition"
+                        :disabled="containerFormula.length > 1"
+                        >Add Formula</v-btn
+                      >
                       <v-expansion-panels class="mb-6">
                         <v-expansion-panel
                           v-for="(item, i) in containerFormula"
@@ -51,10 +51,13 @@
                               item-value="dev_name"
                               return-object
                             >
-                            <template v-slot:item="{ props, item }">
-                              <v-list-item v-bind="props" :subtitle="`${item.raw.dev_name}.${item.raw.group_name}.${item.raw.tag_name}`"></v-list-item>
-                            </template>
-                          </v-select>
+                              <template v-slot:item="{ props, item }">
+                                <v-list-item
+                                  v-bind="props"
+                                  :subtitle="`${item.raw.dev_name}.${item.raw.group_name}.${item.raw.tag_name}`"
+                                ></v-list-item>
+                              </template>
+                            </v-select>
                             <v-select
                               v-model="item.operator_id"
                               :items="OPERATORS_DATA"
@@ -70,7 +73,12 @@
                             ></v-text-field>
                           </v-expansion-panel-text>
                           <v-expansion-panel-text>
-                            <v-switch v-model="item.isMoreParameters" label="Extra Condition" color="red" inset></v-switch>
+                            <v-switch
+                              v-model="item.isMoreParameters"
+                              label="Extra Condition"
+                              color="red"
+                              inset
+                            ></v-switch>
                             <v-select
                               v-if="item.isMoreParameters"
                               v-model="item.conjuntion_id"
@@ -82,7 +90,13 @@
                             ></v-select>
                           </v-expansion-panel-text>
                           <v-expansion-panel-text>
-                            <v-switch v-if="!item.isMoreParameters" v-model="item.isAction" label="Actions" color="success" inset></v-switch>
+                            <v-switch
+                              v-if="!item.isMoreParameters"
+                              v-model="item.isAction"
+                              label="Actions"
+                              color="success"
+                              inset
+                            ></v-switch>
                             <v-select
                               v-if="item.isAction"
                               v-model="item.param_out_id"
@@ -93,11 +107,14 @@
                               return-object
                             >
                               <template v-slot:item="{ props, item }">
-                                <v-list-item v-bind="props" :subtitle="`${item.raw.dev_name}.${item.raw.group_name}.${item.raw.tag_name}`"></v-list-item>
+                                <v-list-item
+                                  v-bind="props"
+                                  :subtitle="`${item.raw.dev_name}.${item.raw.group_name}.${item.raw.tag_name}`"
+                                ></v-list-item>
                               </template>
                             </v-select>
                             <v-select
-                            v-if="item.isAction"
+                              v-if="item.isAction"
                               v-model="item.param_out_state"
                               :items="actionStateOpts"
                               item-title="label"
@@ -121,10 +138,7 @@
                           </v-btn>
                         </v-col>
                         <v-col cols="3">
-                          <v-btn
-                            color="red"
-                            @click="dialogDismiss"
-                          >
+                          <v-btn color="red" @click="dialogDismiss">
                             Cancel
                           </v-btn>
                         </v-col>
@@ -135,7 +149,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <hr>
+          <hr />
           <v-card-text>
             <v-table>
               <thead>
@@ -158,10 +172,10 @@
                       <thead>
                         <tr>
                           <th>No</th>
-                          <th>Parameter</th>
-                          <th>Current Value</th>
-                          <th>Operator</th>
-                          <th>Limit Value</th>
+                          <th style="min-width: 400px">Parameter</th>
+                          <th style="min-width: 100px">Current Value</th>
+                          <th style="min-width: 100px">Operator</th>
+                          <th style="min-width: 100px">Limit Value</th>
                           <th>Conjunction</th>
                           <th>Out Params</th>
                           <th>Out State</th>
@@ -169,16 +183,45 @@
                       </thead>
                       <tbody>
                         <tr v-for="itm in item.children" :key="itm.formula_id">
-                          <td style="width: 100px!important">{{ itm.no }}</td>
-                          <td style="width: 300px!important">{{ itm.dev_name }}.{{ itm.group_name }}.{{ itm.tag_name }}</td>
-                          <td style="width: 300px!important">{{ itm.reg_value }}</td>
-                          <td style="width: 300px!important">{{ itm.operator_desc }}</td>
-                          <td style="width: 100px!important">{{ itm.limit_vals }}</td>
+                          <td style="width: 100px !important">{{ itm.no }}</td>
+                          <td style="width: 300px !important">
+                            {{ itm.dev_name }}.{{ itm.group_name }}.{{
+                              itm.tag_name
+                            }}
+                          </td>
+                          <td style="width: 300px !important">
+                            {{ itm.reg_value }}
+                          </td>
+                          <td style="width: 300px !important">
+                            {{ itm.operator_desc }}
+                          </td>
+                          <td style="width: 100px !important">
+                            {{ itm.limit_vals }}
+                            <button class="btn" @click="editLimit(itm)">
+                              ✏️
+                            </button>
+                          </td>
                           <td>{{ itm.conjunction_desc }}</td>
-                          <td>{{ itm.out_devnm }}.{{ itm.out_grpnm }}.{{ itm.out_tag }}</td>
                           <td>
-                            <v-btn v-if="itm.param_out_state" color="success" disabled>ON</v-btn>
-                            <v-btn v-else-if="!itm.param_out_state && !itm.conjunction_desc" color="red" disabled>OFF</v-btn>
+                            {{ itm.out_devnm }}.{{ itm.out_grpnm }}.{{
+                              itm.out_tag
+                            }}
+                          </td>
+                          <td>
+                            <v-btn
+                              v-if="itm.param_out_state"
+                              color="success"
+                              disabled
+                              >ON</v-btn
+                            >
+                            <v-btn
+                              v-else-if="
+                                !itm.param_out_state && !itm.conjunction_desc
+                              "
+                              color="red"
+                              disabled
+                              >OFF</v-btn
+                            >
                           </td>
                         </tr>
                       </tbody>
@@ -191,7 +234,7 @@
                       readonly
                     />
                   </td>
-                  <td style="text-align: center;">
+                  <td style="text-align: center">
                     <v-btn color="success" disabled>
                       <v-icon>mdi-file-edit</v-icon>
                     </v-btn>
@@ -204,7 +247,9 @@
               </tbody>
               <tbody v-else>
                 <tr>
-                  <th style="text-align: center;" colspan="7">Tidak Ada Formula</th>
+                  <th style="text-align: center" colspan="7">
+                    Tidak Ada Formula
+                  </th>
                 </tr>
               </tbody>
             </v-table>
@@ -217,24 +262,25 @@
 
 
 <script>
-import { toast } from 'vue-sonner';
-import { mapGetters } from 'vuex'
+import axios from "axios";
+import { toast } from "vue-sonner";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'FormulaView',
+  name: "FormulaView",
   data() {
     return {
       actionStateOpts: [
         {
-          label: 'ON',
-          value: 1
+          label: "ON",
+          value: 1,
         },
         {
-          label: 'OFF',
-          value: 0
-        }
+          label: "OFF",
+          value: 0,
+        },
       ],
-      formulaDesc: '',
+      formulaDesc: "",
       isShowDialog: false,
       form: {
         machine_id: null,
@@ -245,82 +291,105 @@ export default {
         param_out_id: null,
         isMoreParameters: true,
         isAction: false,
-        param_out_state: null
+        param_out_state: null,
       },
       containerFormula: [],
       headers: [],
       machines: [],
       formula_nm: null,
-    }
+    };
   },
   computed: {
     ...mapGetters([
-      'MACHINES_DATA',
-      'PARAMETERS_DATA',
-      'OPERATORS_DATA',
-      'CONJUNCTIONS_DATA',
-      'FORMULAS_DATA'
-    ])
+      "MACHINES_DATA",
+      "PARAMETERS_DATA",
+      "OPERATORS_DATA",
+      "CONJUNCTIONS_DATA",
+      "FORMULAS_DATA",
+    ]),
   },
   watch: {
-    isMoreParameters: function() {
-      if(this.isMoreParameters) {
-        if(this.containerFormula.length > 1) {
-          this.containerFormula.splice(0,1)
+    isMoreParameters: function () {
+      if (this.isMoreParameters) {
+        if (this.containerFormula.length > 1) {
+          this.containerFormula.splice(0, 1);
         }
       }
-    }
+    },
   },
   async mounted() {
-    await this.actGetFormulas()
-    await this.actGetMachines()
-    await this.actGetParameters()
-    await this.actGetOperator()
-    await this.actGetConjunctions()
+    await this.actGetFormulas();
+    await this.actGetMachines();
+    await this.actGetParameters();
+    await this.actGetOperator();
+    await this.actGetConjunctions();
   },
   methods: {
+    async editLimit(item) {
+      try {
+        const formula_uid = item.formula_id;
+        const inputLimit = await prompt(
+          "Edit Limit",
+          item.limit_vals,
+          "OK",
+          "Cancel",
+          "number"
+        );
+        const submitData = {
+          formula_id: formula_uid,
+          limit_vals: inputLimit,
+        };
+        await this.$store.dispatch("EDIT_FORMULA", submitData);
+        toast.success("Success to update limit");
+      } catch (error) {
+        toast.error("Failed to update limit");
+      }
+    },
     async actGetMachines() {
       try {
-        await this.$store.dispatch('FETCH_MACHINES')
+        await this.$store.dispatch("FETCH_MACHINES");
       } catch (error) {
-        toast.error('Failed to fetch machines')
+        toast.error("Failed to fetch machines");
       }
     },
     async actGetOperator() {
       try {
-        await this.$store.dispatch('FETCH_OPERATORS')
+        await this.$store.dispatch("FETCH_OPERATORS");
       } catch (error) {
-        toast.error('Failed to fetch operators')
+        toast.error("Failed to fetch operators");
       }
     },
     async actGetParameters() {
       try {
-        this.$store.dispatch('FETCH_PARAMETERS')
+        this.$store.dispatch("FETCH_PARAMETERS");
       } catch (error) {
-        toast.error('Failed to get parameters')
+        toast.error("Failed to get parameters");
       }
     },
     async actGetConjunctions() {
       try {
-        this.$store.dispatch('FETCH_CONJUNCTIONS')
+        this.$store.dispatch("FETCH_CONJUNCTIONS");
       } catch (error) {
-        toast.error('Failed to get conjunctions')
+        toast.error("Failed to get conjunctions");
       }
     },
     async actGetFormulas() {
       try {
-        this.$store.dispatch('FETCH_FORMULAS')
+        this.$store.dispatch("FETCH_FORMULAS");
       } catch (error) {
-        toast.error('Failed to get formulas')
+        toast.error("Failed to get formulas");
       }
     },
     async actPostFormula() {
       try {
-        await this.$store.dispatch('POST_FORMULA', {containerFormulas: this.containerFormula, formula_nm: this.formula_nm})
-        await this.dialogDismiss()
-        toast.success('Success to add formula')
+        await this.$store.dispatch("POST_FORMULA", {
+          containerFormulas: this.containerFormula,
+          formula_nm: this.formula_nm,
+        });
+        await this.dialogDismiss();
+        toast.success("Success to add formula");
       } catch (error) {
-        toast.error('Failed to post formulas')
+        toast.error("Failed to post formulas");
       }
     },
     addCondition() {
@@ -333,15 +402,15 @@ export default {
         param_out_id: null,
         isMoreParameters: true,
         isAction: false,
-        param_out_state: null
-      }
-      this.containerFormula.push(this.form)
+        param_out_state: null,
+      };
+      this.containerFormula.push(this.form);
     },
     async dialogShow() {
-      this.isShowDialog = true
+      this.isShowDialog = true;
     },
     async dialogDismiss() {
-      this.formula_nm = null
+      this.formula_nm = null;
       this.form = {
         machine_id: null,
         param_id: null,
@@ -351,17 +420,19 @@ export default {
         param_out_id: null,
         isMoreParameters: true,
         isAction: false,
-        param_out_state: null
-      }
-      this.containerFormula = []
-      this.isShowDialog = false
-    }
+        param_out_state: null,
+      };
+      this.containerFormula = [];
+      this.isShowDialog = false;
+    },
   },
-}
+};
 </script>
 
 <style scoped>
-th, tr, td {
+th,
+tr,
+td {
   border: 1px solid black;
 }
 </style>
