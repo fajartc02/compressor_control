@@ -4,9 +4,7 @@
       <main class="main-area">
         <div class="main-area-aside d-flex align-start">
           <div class="sidebar-wrapper">
-            <div
-              class="d-flex justify-space-between sidebar-wrapper-header align-top"
-            >
+            <div class="d-flex justify-space-between sidebar-wrapper-header align-top">
               <div class="d-flex flex-column justify-start pl-1">
                 <h2 v-if="plants.length >= 1" class="plant-name">
                   <span> {{ plants[plantIndexPosition].plant_nm }} </span>
@@ -16,23 +14,12 @@
                 </span>
               </div>
               <div v-if="plants.length >= 1">
-                <button
-                  :disabled="plantIndexPosition == 0"
-                  :class="`button-icon mr-2 ${
-                    plantIndexPosition == 0 ? 'disabled' : ''
-                  }`"
-                  @click="setPlantIndexPosition('prev')"
-                >
+                <button :disabled="plantIndexPosition == 0" :class="`button-icon mr-2 ${plantIndexPosition == 0 ? 'disabled' : ''
+                  }`" @click="setPlantIndexPosition('prev')">
                   <v-icon>mdi-arrow-left-thin</v-icon>
                 </button>
-                <button
-                  :disabled="plantIndexPosition == plants.length - 1"
-                  :class="`button-icon mr-2 ${
-                    plantIndexPosition == plants.length - 1 ? 'disabled' : ''
-                  }`"
-                  class="button-icon mr-2"
-                  @click="setPlantIndexPosition('next')"
-                >
+                <button :disabled="plantIndexPosition == plants.length - 1" :class="`button-icon mr-2 ${plantIndexPosition == plants.length - 1 ? 'disabled' : ''
+                  }`" class="button-icon mr-2" @click="setPlantIndexPosition('next')">
                   <v-icon>mdi-arrow-right-thin</v-icon>
                 </button>
               </div>
@@ -40,39 +27,19 @@
           </div>
         </div>
 
-        <img
-          v-if="plants.length >= 1"
-          :src="`${baseUrl}/image?path=${plants[plantIndexPosition].background}`"
-          alt=""
-        />
+        <img v-if="plants.length >= 1" :src="`${baseUrl}/image?path=${plants[plantIndexPosition].background}`" alt="" />
       </main>
 
       <!-- map the machines -->
       <div v-if="machines.length >= 1">
-        <VueDragResize
-          v-for="machine in machines"
-          :key="machine.machine_nm"
-          class="draggable"
-          :isActive="false"
-          :isResizable="false"
-          :isDraggable="selectedEditableMachine == machine.machine_id"
-          :w="300"
-          :h="55"
-          :x="machine.x_axis"
-          :y="machine.y_axis"
-        >
-          <div
-            class="machine-card-list"
-            :style="`${
-              +machine.status
-                ? 'border: 3px solid #10b981'
-                : 'border: 3px solid #A9A9A9'
-            }`"
-          >
-            <div
-              v-if="machine.is_formula_active != null"
-              class="text-center"
-              style="
+        <VueDragResize v-for="machine in machines" :key="machine.machine_nm" class="draggable" :isActive="false"
+          :isResizable="false" :isDraggable="selectedEditableMachine == machine.machine_id" :w="300" :h="55"
+          :x="machine.x_axis" :y="machine.y_axis">
+          <div class="machine-card-list" :style="`${+machine.status
+            ? 'border: 3px solid #10b981'
+            : 'border: 3px solid #A9A9A9'
+            }`">
+            <div v-if="machine.is_remote" class="text-center" style="
                 padding: auto;
                 height: 30px;
                 width: 30px;
@@ -81,25 +48,28 @@
                 border-radius: 50%;
                 top: 15px;
                 left: -15px;
-              "
-            >
-              A
+              ">
+              R
+            </div>
+            <div v-else-if="!machine.is_remote" class="text-center" style="
+                padding: auto;
+                height: 30px;
+                width: 30px;
+                background-color: #ff9f2b;
+                position: absolute;
+                border-radius: 50%;
+                top: 15px;
+                left: -15px;
+              ">
+              L
             </div>
             <div class="d-flex justify-space-between align-center pa-1">
               <div class="d-flex align-center">
                 <div class="machine-status mx-2">
                   <v-avatar color="transparent">
                     <div>
-                      <v-img
-                        v-if="+machine.status"
-                        width="35"
-                        src="@/assets/fanmotion.gif"
-                      ></v-img>
-                      <v-img
-                        v-else
-                        width="35"
-                        src="@/assets/fanStop.png"
-                      ></v-img>
+                      <v-img v-if="+machine.status" width="35" src="@/assets/fanmotion.gif"></v-img>
+                      <v-img v-else width="35" src="@/assets/fanStop.png"></v-img>
                     </div>
                   </v-avatar>
                 </div>
@@ -109,24 +79,13 @@
                 </div>
               </div>
               <div class="machine-action d-flex">
-                <div
-                  v-if="selectedEditableMachine != machine.machine_id"
-                  class="view-mode"
-                >
-                  <button
-                    v-if="+machine.status"
-                    class="machine-action-button mr-2"
-                    @click="turnOffMachine(machine.machine_id)"
-                    :disabled="!isReadyToOperate"
-                  >
+                <div v-if="selectedEditableMachine != machine.machine_id" class="view-mode">
+                  <button v-if="+machine.status" class="machine-action-button mr-2"
+                    @click="turnOffMachine(machine.machine_id)" :disabled="!isReadyToOperate">
                     <v-icon>mdi-stop</v-icon>
                   </button>
-                  <button
-                    v-else
-                    class="machine-action-button mr-2"
-                    @click="turnOnMachine(machine.machine_id)"
-                    :disabled="!isReadyToOperate"
-                  >
+                  <button v-else class="machine-action-button mr-2" @click="turnOnMachine(machine.machine_id)"
+                    :disabled="!isReadyToOperate">
                     <v-icon>mdi-play</v-icon>
                   </button>
                 </div>
@@ -140,7 +99,7 @@
   </div>
 </template>
 
-  <script>
+<script>
 import { mapGetters } from "vuex";
 import VueDragResize from "vue3-drag-resize";
 
@@ -259,14 +218,16 @@ export default {
 
 
 <style src="@vueform/multiselect/themes/default.css"></style>
-  <style scoped>
+<style scoped>
 .disabled {
   background-color: #f3f4f6 !important;
 }
+
 .plant-name {
   font-size: 18px;
   text-align: left;
 }
+
 .plant-description {
   font-size: 14px;
   margin-top: -4px;
@@ -278,6 +239,7 @@ export default {
 .plant-info {
   font-size: 14px;
 }
+
 .plant-badge {
   background-color: #dbeafe;
   color: #3b82f6;
@@ -315,7 +277,8 @@ export default {
   --dot-size: 1px;
   --dot-space: 22px;
 }
-.main-area > img {
+
+.main-area>img {
   position: relative;
   border-radius: 10px;
   width: 100%;
@@ -325,7 +288,7 @@ export default {
   left: 0;
 }
 
-.main-area > .main-area-aside {
+.main-area>.main-area-aside {
   position: absolute;
   z-index: 2;
   margin: 10px;
@@ -382,14 +345,15 @@ export default {
   border-radius: 8px;
 }
 
-.machine-description > h2 {
+.machine-description>h2 {
   font-size: 14px;
   margin-top: 5px;
   line-height: 10px;
   color: #1f2937;
   font-weight: 500;
 }
-.machine-description > span {
+
+.machine-description>span {
   font-size: 12.5px;
   color: #9ca3af;
   font-weight: normal;
@@ -401,14 +365,17 @@ export default {
   font-size: 12px;
   text-transform: uppercase;
 }
+
 .label-stop {
   background-color: #fee2e2;
   color: #dc2626;
 }
+
 .label-running {
   background-color: #dcfce7;
   color: #16a34a;
 }
+
 .machine-action-button {
   border-radius: 8px;
   padding: 5px;

@@ -2,71 +2,52 @@
   <div>
     <v-app-bar class="navbar" style="box-shadow: none">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <div style="width: 85%;">
+      <div style="width: 75%;">
         <h3 class="ml-2">Compressor Control System</h3>
       </div>
       <div class="col-12 text-center" style="align-items: center;justify-content: space-between;">
-        <div
-          class="text-center"
-          style="
+        <div class="text-center" style="
             padding: auto;
             height: 30px;
             width: 30px;
             background-color: #10b981;
             border-radius: 50%;
-          "
-        >
-          A
+          ">
+          R
         </div>
       </div>
-      <label class="ml-3">Compressor Auto</label>
+      <label class="ml-3 mr-3">Compressor Remote</label>
+      <div class="col-12 text-center" style="align-items: center;justify-content: space-between;">
+        <div class="text-center" style="
+            padding: auto;
+            height: 30px;
+            width: 30px;
+            background-color: #ff9f2b;
+            border-radius: 50%;
+          ">
+          L
+        </div>
+      </div>
+      <label class="ml-3">Compressor Local</label>
     </v-app-bar>
-    <v-navigation-drawer
-      v-model="drawer"
-      absolute
-      temporary
-      class="bg-blue-darken-4"
-      theme="dark"
-    >
+    <v-navigation-drawer v-model="drawer" absolute temporary class="bg-blue-darken-4" theme="dark">
       <template v-slot:prepend>
-        <v-list-item
-          lines="two"
-          prepend-avatar="https://randomuser.me/api/portraits/men/1.jpg"
-          :title="isLoggedIn"
-          subtitle="Logged in"
-        />
+        <v-list-item lines="two" prepend-avatar="https://randomuser.me/api/portraits/men/1.jpg" :title="isLoggedIn"
+          subtitle="Logged in" />
       </template>
       <v-divider />
       <v-list class="mt-2" v-model:opened="isOpen">
         <router-link to="/" style="text-decoration: none">
-          <v-list-item
-            prepend-icon="mdi-home-variant"
-            title="Home"
-            class="menu-item"
-          />
+          <v-list-item prepend-icon="mdi-home-variant" title="Home" class="menu-item" />
         </router-link>
         <router-link to="/compressor" style="text-decoration: none">
-          <v-list-item
-            prepend-icon="mdi-washing-machine"
-            title="Compressor"
-            class="menu-item"
-          />
+          <v-list-item prepend-icon="mdi-washing-machine" title="Compressor" class="menu-item" />
         </router-link>
         <v-list-group value="Admin">
           <template v-slot:activator="{ props }">
-            <v-list-item
-              v-bind="props"
-              prepend-icon="mdi-cog"
-              title="Admin"
-              class="menu-item"
-            />
+            <v-list-item v-bind="props" prepend-icon="mdi-cog" title="Admin" class="menu-item" />
           </template>
-          <router-link
-            v-for="(menu, i) in masterMenu"
-            :key="i"
-            :to="menu.path"
-            style="text-decoration: none"
-          >
+          <router-link v-for="(menu, i) in masterMenu" :key="i" :to="menu.path" style="text-decoration: none">
             <v-list-item :title="menu.title" class="menu-item" />
           </router-link>
         </v-list-group>
@@ -132,6 +113,7 @@ export default {
   z-index: 3;
   margin: 0px !important;
 }
+
 .nav-title {
   font-weight: 600;
 }
@@ -141,6 +123,7 @@ export default {
   border-radius: 10px;
   margin: 0px 10px;
 }
+
 .menu-item:hover {
   color: #fff;
   background-color: #000;
