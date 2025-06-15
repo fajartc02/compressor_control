@@ -327,7 +327,13 @@ export default {
   methods: {
     async editLimit(item) {
       try {
-        const formula_uid = item.formula_id;
+        const password = await prompt(
+          "Masukan password",
+          "",
+          "OK",
+        );
+        if(password == '59191') {
+          const formula_uid = item.formula_id;
         const inputLimit = await prompt(
           "Edit Limit",
           item.limit_vals,
@@ -341,6 +347,9 @@ export default {
         };
         await this.$store.dispatch("EDIT_FORMULA", submitData);
         toast.success("Success to update limit");
+        } else {
+          toast.error('Password salah!')
+        }
       } catch (error) {
         toast.error("Failed to update limit");
       }

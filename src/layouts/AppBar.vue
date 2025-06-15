@@ -2,21 +2,24 @@
   <div>
     <v-app-bar class="navbar" style="box-shadow: none">
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <h3 class="ml-2">Compressor Control System</h3>
-      <v-spacer></v-spacer>
-      <div
-        class="text-center"
-        style="
-          padding: auto;
-          height: 30px;
-          width: 30px;
-          background-color: #10b981;
-          border-radius: 50%;
-        "
-      >
-        A
+      <div style="width: 85%;">
+        <h3 class="ml-2">Compressor Control System</h3>
       </div>
-      <label class="ml-3 mr-3">: Compressor Auto</label>
+      <div class="col-12 text-center" style="align-items: center;justify-content: space-between;">
+        <div
+          class="text-center"
+          style="
+            padding: auto;
+            height: 30px;
+            width: 30px;
+            background-color: #10b981;
+            border-radius: 50%;
+          "
+        >
+          A
+        </div>
+      </div>
+      <label class="ml-3">Compressor Auto</label>
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
